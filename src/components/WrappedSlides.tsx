@@ -319,23 +319,25 @@ export default function WrappedSlides({ member, onBack }: Props) {
                 ? "De basis, altijd goed!"
                 : member.favoriete_lestype === "Intensity"
                   ? "Extra gas geven 🔥"
-                  : member.favoriete_lestype === "Running"
+                  : member.favoriete_lestype === "Running" || member.favoriete_lestype === "Engine"
                     ? "Kilometers maken!"
-                    : member.favoriete_lestype === "Hyrox"
+                    : member.favoriete_lestype.includes("Hyrox")
                       ? "Race ready! 🏃"
                       : member.favoriete_lestype === "Focus"
                         ? "Skills sharpenen"
                         : member.favoriete_lestype === "Flex Friday"
                           ? "Flexibel de week uit"
-                          : member.favoriete_lestype === "Weightlifting"
-                            ? "Heavy lifting! 🏋️"
-                            : member.favoriete_lestype === "Strength"
-                              ? "Sterk worden 💪"
-                              : member.favoriete_lestype === "Program"
-                                ? "Toegewijd aan het programma!"
-                                : member.favoriete_lestype === "Teens"
-                                  ? "De toekomst van CFL!"
-                                  : "Lekker variëren!"}
+                          : member.favoriete_lestype === "GetShredded"
+                            ? "Shredded worden! 💪"
+                            : member.favoriete_lestype.includes("28 Day")
+                              ? "28 dagen knallen!"
+                              : member.favoriete_lestype === "Teens"
+                                ? "De toekomst van CFL!"
+                                : member.favoriete_lestype.includes("BUILD") || member.favoriete_lestype === "Strongman"
+                                  ? "Sterk worden 💪"
+                                  : member.favoriete_lestype.includes("Oly") || member.favoriete_lestype === "Weightlifting"
+                                    ? "Heavy lifting! 🏋️"
+                                    : "Lekker variëren!"}
             </p>
           </div>
         </div>
