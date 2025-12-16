@@ -84,8 +84,8 @@ export default function WrappedSlides({ member, onBack }: Props) {
   // Video URL - replace with actual URL when available
   const videoUrl = ""; // TODO: Add video URL
 
-  const weeklyAvg = Math.round((member.bezoeken / 11) * 10) / 10;
-  const avgWeeklyAvg = Math.round((communityStats.avgBezoeken / 11) * 10) / 10;
+  const weeklyAvg = Math.round((member.bezoeken / 52) * 10) / 10;
+  const avgWeeklyAvg = Math.round((communityStats.avgBezoeken / 52) * 10) / 10;
 
   // Comparisons
   const bezoekenVsAvg = member.bezoeken - communityStats.avgBezoeken;
@@ -190,7 +190,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
       content: (
         <div className="flex flex-col items-center justify-center h-full text-white text-center px-8">
           <Calendar className="w-16 h-16 mb-6 opacity-80" />
-          <p className="text-xl opacity-90 mb-4">Dit kwartaal kwam je</p>
+          <p className="text-xl opacity-90 mb-4">Dit jaar kwam je</p>
           <p className="text-8xl font-black mb-2">{member.bezoeken}</p>
           <p className="text-2xl font-bold">keer trainen</p>
           <div className="mt-8 bg-white/20 rounded-2xl px-6 py-4">
@@ -370,7 +370,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
           <p className="text-xl mb-8">meest actieve leden</p>
           <div className="bg-white/20 rounded-2xl px-8 py-4">
             <p className="text-sm opacity-90">
-              Samen kwamen {communityStats.totalMembers} CFL&apos;ers dit kwartaal
+              Samen kwamen {communityStats.totalMembers} CFL&apos;ers dit jaar
             </p>
             <p className="text-2xl font-bold">
               {member.community_bezoeken.toLocaleString("nl-NL")} keer
@@ -460,7 +460,8 @@ export default function WrappedSlides({ member, onBack }: Props) {
             Dank je dat je deel bent van
           </p>
           <p className="text-4xl font-black mb-8">CrossFit Leiden</p>
-          <p className="text-lg opacity-80 mb-8">Tot op de vloer in 2026 ❤️</p>
+          <p className="text-lg opacity-80 mb-4">Tot op de vloer in 2026 ❤️</p>
+          <p className="text-sm opacity-50">Data van 1 december 2024 t/m 30 november 2025</p>
         </div>
       ),
     },
@@ -539,9 +540,6 @@ export default function WrappedSlides({ member, onBack }: Props) {
           <head><title>${filename}</title></head>
           <body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#000;">
             <img src="${dataUrl}" style="max-width:100%;max-height:100vh;" />
-            <p style="position:fixed;bottom:20px;left:0;right:0;text-align:center;color:white;font-family:sans-serif;">
-              Houd de afbeelding ingedrukt om op te slaan
-            </p>
           </body>
         </html>
       `);
@@ -669,7 +667,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
       drawBox(560, 730, 430, 160);
       ctx.font = "24px Arial, sans-serif";
       ctx.fillText("Favoriete dag", 305, 790);
-      ctx.fillText("Top", 775, 790);
+      ctx.fillText("Top actief", 775, 790);
       ctx.font = "bold 36px Arial, sans-serif";
       ctx.fillText(member.favoriete_dag, 305, 850);
       ctx.fillText(member.percentile + "%", 775, 850);
@@ -690,6 +688,33 @@ export default function WrappedSlides({ member, onBack }: Props) {
       ctx.font = "bold 34px Arial, sans-serif";
       ctx.fillText(member.top_maand, 305, 1230);
       ctx.fillText(member.afmeldingen + "x", 775, 1230);
+
+      // Buddies (if exists)
+      if (member.buddy_1) {
+        // Tel hoeveel buddies er zijn voor dynamische hoogte
+        const buddyCount = [member.buddy_1, member.buddy_2, member.buddy_3].filter(Boolean).length;
+        const boxHeight = 80 + buddyCount * 50;
+
+        drawBox(90, 1300, 900, boxHeight);
+        ctx.font = "24px Arial, sans-serif";
+        ctx.fillText("Training Buddies", 540, 1345);
+        ctx.font = "bold 28px Arial, sans-serif";
+
+        let buddyY = 1390;
+        const buddySpacing = 45;
+
+        if (member.buddy_1) {
+          ctx.fillText(`🥇 ${member.buddy_1} (${member.buddy_1_sessies}x)`, 540, buddyY);
+          buddyY += buddySpacing;
+        }
+        if (member.buddy_2) {
+          ctx.fillText(`🥈 ${member.buddy_2} (${member.buddy_2_sessies}x)`, 540, buddyY);
+          buddyY += buddySpacing;
+        }
+        if (member.buddy_3) {
+          ctx.fillText(`🥉 ${member.buddy_3} (${member.buddy_3_sessies}x)`, 540, buddyY);
+        }
+      }
 
       // Footer
       ctx.font = "28px Arial, sans-serif";
