@@ -327,7 +327,15 @@ export default function WrappedSlides({ member, onBack }: Props) {
                         ? "Skills sharpenen"
                         : member.favoriete_lestype === "Flex Friday"
                           ? "Flexibel de week uit"
-                          : "Lekker variëren!"}
+                          : member.favoriete_lestype === "Weightlifting"
+                            ? "Heavy lifting! 🏋️"
+                            : member.favoriete_lestype === "Strength"
+                              ? "Sterk worden 💪"
+                              : member.favoriete_lestype === "Program"
+                                ? "Toegewijd aan het programma!"
+                                : member.favoriete_lestype === "Teens"
+                                  ? "De toekomst van CFL!"
+                                  : "Lekker variëren!"}
             </p>
           </div>
         </div>
