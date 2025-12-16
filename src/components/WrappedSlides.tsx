@@ -317,6 +317,53 @@ export default function WrappedSlides({ member, onBack }: Props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [nextSlide, prevSlide, onBack]);
 
+  // Helper to trigger download that works on mobile
+  const triggerDownload = async (dataUrl: string, filename: string) => {
+    // Try Web Share API first (works best on mobile)
+    if (navigator.share && navigator.canShare) {
+      try {
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        const file = new File([blob], filename, { type: "image/png" });
+
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: "CrossFit Leiden Wrapped 2025",
+          });
+          return;
+        }
+      } catch (err) {
+        console.log("Share failed, falling back to download");
+      }
+    }
+
+    // Fallback: open in new tab (user can long-press to save on mobile)
+    const newTab = window.open();
+    if (newTab) {
+      newTab.document.write(`
+        <html>
+          <head><title>${filename}</title></head>
+          <body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#000;">
+            <img src="${dataUrl}" style="max-width:100%;max-height:100vh;" />
+            <p style="position:fixed;bottom:20px;left:0;right:0;text-align:center;color:white;font-family:sans-serif;">
+              Houd de afbeelding ingedrukt om op te slaan
+            </p>
+          </body>
+        </html>
+      `);
+      newTab.document.close();
+    } else {
+      // Last resort: regular download link
+      const link = document.createElement("a");
+      link.download = filename;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   // Generate 9:16 Instagram Story image
   const generateStoryImage = async (
     element: HTMLElement,
@@ -347,10 +394,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
         backgroundColor: null,
       });
 
-      const link = document.createElement("a");
-      link.download = filename;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      await triggerDownload(canvas.toDataURL("image/png"), filename);
     } finally {
       document.body.removeChild(wrapper);
     }
@@ -460,10 +504,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
 
       // Trigger download
       const dataUrl = canvas.toDataURL("image/png");
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = "cfl-wrapped-overzicht.png";
-      a.click();
+      triggerDownload(dataUrl, `cfl-wrapped-${member.voornaam}-overzicht.png`);
     };
     logo.src = "/cfl-logo.png";
   };
