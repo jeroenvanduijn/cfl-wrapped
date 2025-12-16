@@ -9,6 +9,7 @@ import {
   Share2,
   Calendar,
   User,
+  Users,
   TrendingUp,
   Award,
   X,
@@ -34,6 +35,12 @@ type MemberData = {
   rustigste_maand: string;
   eerste_bezoek: string;
   percentile: number;
+  buddy_1: string;
+  buddy_1_sessies: number;
+  buddy_2: string;
+  buddy_2_sessies: number;
+  buddy_3: string;
+  buddy_3_sessies: number;
   community_bezoeken: number;
 };
 
@@ -249,6 +256,53 @@ export default function WrappedSlides({ member, onBack }: Props) {
         </div>
       ),
     },
+    // Buddies slide - only show if there are buddies
+    ...(member.buddy_1
+      ? [
+          {
+            id: "buddies",
+            bg: "bg-gradient-to-br from-[#F7CB15] to-[#E5B800]",
+            content: (
+              <div className="flex flex-col items-center justify-center h-full text-[#1a1a1a] text-center px-8">
+                <Users className="w-16 h-16 mb-6 opacity-80" />
+                <p className="text-xl opacity-80 mb-4">Jouw top training buddies</p>
+                <div className="space-y-3 w-full max-w-xs">
+                  {member.buddy_1 && (
+                    <div className="bg-black/10 rounded-2xl px-6 py-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl font-black">🥇</span>
+                        <span className="text-xl font-bold">{member.buddy_1}</span>
+                      </div>
+                      <span className="text-lg opacity-70">{member.buddy_1_sessies}x</span>
+                    </div>
+                  )}
+                  {member.buddy_2 && (
+                    <div className="bg-black/10 rounded-2xl px-6 py-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl font-black">🥈</span>
+                        <span className="text-xl font-bold">{member.buddy_2}</span>
+                      </div>
+                      <span className="text-lg opacity-70">{member.buddy_2_sessies}x</span>
+                    </div>
+                  )}
+                  {member.buddy_3 && (
+                    <div className="bg-black/10 rounded-2xl px-6 py-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl font-black">🥉</span>
+                        <span className="text-xl font-bold">{member.buddy_3}</span>
+                      </div>
+                      <span className="text-lg opacity-70">{member.buddy_3_sessies}x</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-sm opacity-60 mt-6">
+                  Samen in de les = samen sterker 💪
+                </p>
+              </div>
+            ),
+          },
+        ]
+      : []),
     {
       id: "seasons",
       bg: "bg-gradient-to-br from-[#EF4C37] to-[#D43A28]",

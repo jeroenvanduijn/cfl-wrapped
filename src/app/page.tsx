@@ -19,6 +19,12 @@ type MemberData = {
   rustigste_maand: string;
   eerste_bezoek: string;
   percentile: number;
+  buddy_1: string;
+  buddy_1_sessies: number;
+  buddy_2: string;
+  buddy_2_sessies: number;
+  buddy_3: string;
+  buddy_3_sessies: number;
   community_bezoeken: number;
 };
 
