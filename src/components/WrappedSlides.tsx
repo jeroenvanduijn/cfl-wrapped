@@ -424,12 +424,14 @@ export default function WrappedSlides({ member, onBack }: Props) {
       bg: "bg-gradient-to-br from-[#7B6D8D] to-[#5D5169]",
       content: (
         <div className="flex flex-col items-center justify-center h-full text-white text-center px-6 py-12">
-          <p className="text-xl opacity-90 mb-6">Deel met ons!</p>
+          <p className="text-xl opacity-90 mb-2">Deel met ons!</p>
+          <p className="text-sm opacity-60 mb-6">Vul in en ontvang daarna je social share afbeelding 📸</p>
 
           {submitted ? (
             <div className="bg-white/20 rounded-2xl px-8 py-6 mb-6">
               <p className="text-2xl font-bold mb-2">Bedankt! 🙏</p>
               <p className="opacity-80">Je antwoorden zijn opgeslagen</p>
+              <p className="text-sm opacity-60 mt-2">Swipe door voor je download →</p>
             </div>
           ) : (
             <div className="w-full max-w-sm space-y-4">
@@ -474,7 +476,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
             </div>
           )}
 
-          <div className="mt-6">
+          <div className="mt-4">
             <ChevronRight className="w-8 h-8 opacity-40 animate-bounce" />
           </div>
         </div>
@@ -963,7 +965,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
 
       {/* Action buttons on last slide */}
       {currentSlide === slides.length - 1 && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-50">
+        <div className="absolute bottom-32 left-1/2 -translate-x-1/2 flex gap-4 z-50">
           <div className="relative">
             <button
               onClick={() => setShowDownloadMenu(!showDownloadMenu)}
