@@ -7,13 +7,16 @@ import {
   ChevronRight,
   Download,
   Share2,
-  Heart,
   Calendar,
   User,
   TrendingUp,
   Award,
   X,
   Image as ImageIcon,
+  Play,
+  Send,
+  Target,
+  Trophy,
 } from "lucide-react";
 import communityStats from "@/data/community-stats.json";
 
@@ -62,8 +65,17 @@ export default function WrappedSlides({ member, onBack }: Props) {
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const [voornemen2026, setVoornemen2026] = useState("");
+  const [grootsteWin2025, setGrootsteWin2025] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const slideRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Video URL - replace with actual URL when available
+  const videoUrl = ""; // TODO: Add video URL
 
   const weeklyAvg = Math.round((member.bezoeken / 11) * 10) / 10;
   const avgWeeklyAvg = Math.round((communityStats.avgBezoeken / 11) * 10) / 10;
@@ -75,6 +87,34 @@ export default function WrappedSlides({ member, onBack }: Props) {
   const isAboveAvgAfmeldingen = afmeldingenVsAvg > 0;
   const isSameDay = member.favoriete_dag.toLowerCase() === communityStats.popularDay.toLowerCase();
   const isSameCoach = member.favoriete_coaches.includes(communityStats.popularCoach);
+
+  // Handle feedback submission
+  const handleSubmitFeedback = async () => {
+    if (isSubmitting || submitted) return;
+    if (!voornemen2026.trim() && !grootsteWin2025.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/responses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          memberId: member.registratienummer,
+          voornaam: member.voornaam,
+          voornemen2026: voornemen2026.trim(),
+          grootsteWin2025: grootsteWin2025.trim(),
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const slides = [
     {
@@ -97,6 +137,42 @@ export default function WrappedSlides({ member, onBack }: Props) {
           <p className="text-5xl font-black mt-2">Wrapped 2025</p>
           <div className="mt-12 animate-bounce">
             <ChevronRight className="w-8 h-8 opacity-60" />
+          </div>
+        </div>
+      ),
+    },
+    // Video slide - shows after intro
+    {
+      id: "video",
+      bg: "bg-gradient-to-br from-[#1a1a1a] to-[#2d2d2d]",
+      content: (
+        <div className="flex flex-col items-center justify-center h-full text-white text-center px-8">
+          {videoUrl ? (
+            <div className="w-full max-w-md aspect-[9/16] relative">
+              <video
+                ref={videoRef}
+                src={videoUrl}
+                className="w-full h-full object-cover rounded-2xl"
+                controls
+                playsInline
+                onPlay={() => setVideoPlaying(true)}
+                onPause={() => setVideoPlaying(false)}
+                onEnded={() => setVideoPlaying(false)}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="w-32 h-32 rounded-full bg-white/10 flex items-center justify-center mb-8">
+                <Play className="w-16 h-16 opacity-60" />
+              </div>
+              <p className="text-2xl font-bold mb-4">Video komt binnenkort</p>
+              <p className="text-lg opacity-70">
+                Hier komt een speciale boodschap voor jou
+              </p>
+            </>
+          )}
+          <div className="mt-8">
+            <ChevronRight className="w-8 h-8 opacity-40 animate-bounce" />
           </div>
         </div>
       ),
@@ -250,6 +326,69 @@ export default function WrappedSlides({ member, onBack }: Props) {
         </div>
       ),
     },
+    // Feedback slide
+    {
+      id: "feedback",
+      bg: "bg-gradient-to-br from-[#7B6D8D] to-[#5D5169]",
+      content: (
+        <div className="flex flex-col items-center justify-center h-full text-white text-center px-6 py-12">
+          <p className="text-xl opacity-90 mb-6">Deel met ons!</p>
+
+          {submitted ? (
+            <div className="bg-white/20 rounded-2xl px-8 py-6 mb-6">
+              <p className="text-2xl font-bold mb-2">Bedankt! 🙏</p>
+              <p className="opacity-80">Je antwoorden zijn opgeslagen</p>
+            </div>
+          ) : (
+            <div className="w-full max-w-sm space-y-4">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Trophy className="w-5 h-5 opacity-80" />
+                  <p className="text-sm opacity-80">Grootste win van 2025</p>
+                </div>
+                <textarea
+                  value={grootsteWin2025}
+                  onChange={(e) => setGrootsteWin2025(e.target.value)}
+                  placeholder="Mijn eerste muscle-up, 100kg deadlift..."
+                  className="w-full bg-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 border border-white/20 focus:border-white/50 focus:outline-none resize-none"
+                  rows={2}
+                  maxLength={200}
+                />
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Target className="w-5 h-5 opacity-80" />
+                  <p className="text-sm opacity-80">Goed voornemen voor 2026</p>
+                </div>
+                <textarea
+                  value={voornemen2026}
+                  onChange={(e) => setVoornemen2026(e.target.value)}
+                  placeholder="Elke week 3x trainen, handstand leren..."
+                  className="w-full bg-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 border border-white/20 focus:border-white/50 focus:outline-none resize-none"
+                  rows={2}
+                  maxLength={200}
+                />
+              </div>
+
+              <button
+                onClick={handleSubmitFeedback}
+                disabled={isSubmitting || (!voornemen2026.trim() && !grootsteWin2025.trim())}
+                className="w-full bg-white text-[#7B6D8D] font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Send className="w-5 h-5" />
+                {isSubmitting ? "Verzenden..." : "Verstuur"}
+              </button>
+            </div>
+          )}
+
+          <div className="mt-6">
+            <ChevronRight className="w-8 h-8 opacity-40 animate-bounce" />
+          </div>
+        </div>
+      ),
+    },
+    // Outro slide
     {
       id: "outro",
       bg: "bg-gradient-to-br from-[#EF4C37] to-[#D43A28]",
