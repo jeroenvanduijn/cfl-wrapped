@@ -957,54 +957,16 @@ export default function WrappedSlides({ member, onBack }: Props) {
         ))}
       </div>
 
-      {/* Click outside to close menu - must be BEFORE the menu in DOM */}
-      {showDownloadMenu && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowDownloadMenu(false)}
-        />
-      )}
-
       {/* Action buttons on last slide */}
       {currentSlide === slides.length - 1 && (
-        <div className="absolute bottom-32 left-1/2 -translate-x-1/2 flex gap-4 z-50">
-          <div className="relative">
-            <button
-              onClick={() => setShowDownloadMenu(!showDownloadMenu)}
-              disabled={isGenerating}
-              className="flex items-center gap-2 bg-white text-[#EF4C37] px-6 py-3 rounded-full font-bold hover:scale-105 transition-transform disabled:opacity-50"
-            >
-              <Download className="w-5 h-5" />
-              {isGenerating ? "Bezig..." : "Download"}
-            </button>
-
-            {showDownloadMenu && (
-              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-xl overflow-hidden min-w-[200px]">
-                <button
-                  onClick={handleDownloadSlide}
-                  className="w-full px-4 py-3 text-left text-gray-800 hover:bg-gray-100 flex items-center gap-3"
-                >
-                  <ImageIcon className="w-5 h-5" />
-                  <span>Deze slide</span>
-                </button>
-                <button
-                  onClick={handleDownloadSummary}
-                  className="w-full px-4 py-3 text-left text-gray-800 hover:bg-gray-100 flex items-center gap-3 border-t"
-                >
-                  <Award className="w-5 h-5" />
-                  <span>Totaaloverzicht</span>
-                </button>
-              </div>
-            )}
-          </div>
-
+        <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-50">
           <button
-            onClick={handleShare}
+            onClick={handleDownloadSummary}
             disabled={isGenerating}
-            className="flex items-center gap-2 bg-white/20 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-transform border border-white/30 disabled:opacity-50"
+            className="flex items-center gap-2 bg-white text-[#EF4C37] px-6 py-3 rounded-full font-bold hover:scale-105 transition-transform disabled:opacity-50"
           >
-            <Share2 className="w-5 h-5" />
-            Delen
+            <Download className="w-5 h-5" />
+            {isGenerating ? "Bezig..." : "Download totaaloverzicht"}
           </button>
         </div>
       )}
