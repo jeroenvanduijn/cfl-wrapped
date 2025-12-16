@@ -25,6 +25,7 @@ type MemberData = {
   buddy_2_sessies: number;
   buddy_3: string;
   buddy_3_sessies: number;
+  favoriete_lestype: string;
   community_bezoeken: number;
 };
 

@@ -41,6 +41,7 @@ type MemberData = {
   buddy_2_sessies: number;
   buddy_3: string;
   buddy_3_sessies: number;
+  favoriete_lestype: string;
   community_bezoeken: number;
 };
 
@@ -303,6 +304,35 @@ export default function WrappedSlides({ member, onBack }: Props) {
           },
         ]
       : []),
+    // Favorite lesson type slide
+    {
+      id: "lestype",
+      bg: "bg-gradient-to-br from-[#0CBABA] to-[#099999]",
+      content: (
+        <div className="flex flex-col items-center justify-center h-full text-white text-center px-8">
+          <div className="text-6xl mb-6">🏋️</div>
+          <p className="text-xl opacity-80 mb-4">Jouw favoriete lestype</p>
+          <p className="text-5xl font-black mb-6">{member.favoriete_lestype}</p>
+          <div className="bg-white/20 rounded-2xl px-8 py-4">
+            <p className="text-lg">
+              {member.favoriete_lestype === "CrossFit"
+                ? "De basis, altijd goed!"
+                : member.favoriete_lestype === "Intensity"
+                  ? "Extra gas geven 🔥"
+                  : member.favoriete_lestype === "Running"
+                    ? "Kilometers maken!"
+                    : member.favoriete_lestype === "Hyrox"
+                      ? "Race ready! 🏃"
+                      : member.favoriete_lestype === "Focus"
+                        ? "Skills sharpenen"
+                        : member.favoriete_lestype === "Flex Friday"
+                          ? "Flexibel de week uit"
+                          : "Lekker variëren!"}
+            </p>
+          </div>
+        </div>
+      ),
+    },
     {
       id: "seasons",
       bg: "bg-gradient-to-br from-[#EF4C37] to-[#D43A28]",
@@ -679,15 +709,15 @@ export default function WrappedSlides({ member, onBack }: Props) {
       ctx.font = "bold 34px Arial, sans-serif";
       ctx.fillText(member.favoriete_coaches, 540, 1040);
 
-      // Topmaand & Afmeldingen
+      // Topmaand & Lestype
       drawBox(90, 1110, 430, 160);
       drawBox(560, 1110, 430, 160);
       ctx.font = "24px Arial, sans-serif";
       ctx.fillText("Topmaand", 305, 1170);
-      ctx.fillText("Afmeldingen", 775, 1170);
+      ctx.fillText("Lestype", 775, 1170);
       ctx.font = "bold 34px Arial, sans-serif";
       ctx.fillText(member.top_maand, 305, 1230);
-      ctx.fillText(member.afmeldingen + "x", 775, 1230);
+      ctx.fillText(member.favoriete_lestype, 775, 1230);
 
       // Buddies (if exists)
       if (member.buddy_1) {
