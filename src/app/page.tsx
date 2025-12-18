@@ -27,6 +27,11 @@ type MemberData = {
   buddy_3_sessies: number;
   favoriete_lestype: string;
   community_bezoeken: number;
+  moeilijkste_dag: string;
+  moeilijkste_dag_count: number;
+  moeilijkste_tijd: string;
+  moeilijkste_tijd_count: number;
+  no_shows: number;
 };
 
 export default function Home() {
