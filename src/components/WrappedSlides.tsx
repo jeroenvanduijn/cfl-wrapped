@@ -526,7 +526,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
       bg: "bg-gradient-to-br from-[#EF4C37] to-[#D43A28]",
       content: (
         <div className="flex flex-col items-center justify-center h-full text-white text-center px-8">
-          <div className="w-48 h-24 relative mb-8">
+          <div className="w-48 h-24 relative mb-6">
             <Image
               src="/cfl-logo.png"
               alt="CrossFit Leiden"
@@ -537,8 +537,12 @@ export default function WrappedSlides({ member, onBack }: Props) {
           <p className="text-2xl font-light mb-4">
             Dank je dat je deel bent van
           </p>
-          <p className="text-4xl font-black mb-8">CrossFit Leiden</p>
-          <p className="text-lg opacity-80 mb-4">Tot op de vloer in 2026 ❤️</p>
+          <p className="text-4xl font-black mb-6">CrossFit Leiden</p>
+          <div className="bg-white/20 rounded-2xl px-8 py-4 mb-6">
+            <p className="text-xl font-bold">🎉 2026 = 10 jaar CFL!</p>
+            <p className="text-sm opacity-80">En dat gaan we vieren</p>
+          </div>
+          <p className="text-lg opacity-80 mb-4">Tot op de vloer! ❤️</p>
           <p className="text-sm opacity-50">Data van 1 december 2024 t/m 30 november 2025</p>
         </div>
       ),
