@@ -767,18 +767,28 @@ export default function WrappedSlides({ member, onBack }: Props) {
       ctx.fillText(member.top_maand, 305, 1230);
       ctx.fillText(member.favoriete_lestype, 775, 1230);
 
+      // Moeilijkste moment & No-shows
+      drawBox(90, 1300, 430, 160);
+      drawBox(560, 1300, 430, 160);
+      ctx.font = "24px Arial, sans-serif";
+      ctx.fillText("Moeilijkste dag", 305, 1360);
+      ctx.fillText("No-shows", 775, 1360);
+      ctx.font = "bold 34px Arial, sans-serif";
+      ctx.fillText(member.moeilijkste_dag || "-", 305, 1420);
+      ctx.fillText(String(member.no_shows), 775, 1420);
+
       // Buddies (if exists)
       if (member.buddy_1) {
         // Tel hoeveel buddies er zijn voor dynamische hoogte
         const buddyCount = [member.buddy_1, member.buddy_2, member.buddy_3].filter(Boolean).length;
         const boxHeight = 80 + buddyCount * 50;
 
-        drawBox(90, 1300, 900, boxHeight);
+        drawBox(90, 1490, 900, boxHeight);
         ctx.font = "24px Arial, sans-serif";
-        ctx.fillText("Training Buddies", 540, 1345);
+        ctx.fillText("Training Buddies", 540, 1535);
         ctx.font = "bold 28px Arial, sans-serif";
 
-        let buddyY = 1390;
+        let buddyY = 1580;
         const buddySpacing = 45;
 
         if (member.buddy_1) {
@@ -796,7 +806,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
 
       // Footer
       ctx.font = "28px Arial, sans-serif";
-      ctx.fillText("crossfitleiden.nl", 540, 1800);
+      ctx.fillText("crossfitleiden.nl", 540, 1850);
 
       // Trigger download
       const dataUrl = canvas.toDataURL("image/png");
