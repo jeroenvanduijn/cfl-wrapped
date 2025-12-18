@@ -43,6 +43,11 @@ type MemberData = {
   buddy_3_sessies: number;
   favoriete_lestype: string;
   community_bezoeken: number;
+  moeilijkste_dag: string;
+  moeilijkste_dag_count: number;
+  moeilijkste_tijd: string;
+  moeilijkste_tijd_count: number;
+  no_shows: number;
 };
 
 type Props = {
@@ -394,6 +399,37 @@ export default function WrappedSlides({ member, onBack }: Props) {
                     }
                   </p>
                 </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
+    // Moeilijkste moment slide (only show if they have cancellations)
+    ...(member.moeilijkste_dag && member.moeilijkste_dag_count > 0
+      ? [
+          {
+            id: "moeilijkste",
+            bg: "bg-gradient-to-br from-[#6B5B95] to-[#4A4063]",
+            content: (
+              <div className="flex flex-col items-center justify-center h-full text-white text-center px-8">
+                <div className="text-6xl mb-6">⏰</div>
+                <p className="text-xl opacity-80 mb-4">Jouw moeilijkste moment</p>
+                <div className="bg-white/20 rounded-2xl px-8 py-6 mb-6">
+                  <p className="text-4xl font-black mb-2">{member.moeilijkste_dag}</p>
+                  <p className="text-lg opacity-80">{member.moeilijkste_dag_count}x afgezegd</p>
+                </div>
+                {member.moeilijkste_tijd && (
+                  <div className="bg-white/10 rounded-2xl px-8 py-4">
+                    <p className="text-lg opacity-80">Vooral om</p>
+                    <p className="text-3xl font-bold">{member.moeilijkste_tijd}</p>
+                    <p className="text-sm opacity-60">({member.moeilijkste_tijd_count}x)</p>
+                  </div>
+                )}
+                {member.no_shows > 0 && (
+                  <p className="mt-6 text-sm opacity-60">
+                    En {member.no_shows}x niet komen opdagen... 👀
+                  </p>
+                )}
               </div>
             ),
           },
