@@ -52,7 +52,23 @@ export default function Home() {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     if (data[upperCode]) {
-      setMember(data[upperCode]);
+      const memberData = data[upperCode];
+      setMember(memberData);
+
+      // Log view
+      try {
+        await fetch("/api/views", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            memberId: memberData.registratienummer,
+            voornaam: memberData.voornaam,
+            code: upperCode,
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to log view:", err);
+      }
     } else {
       setError("Code niet gevonden. Controleer je code en probeer opnieuw.");
     }
