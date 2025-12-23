@@ -118,7 +118,7 @@ export default function CommunityExportPage() {
   const downloadAll = async () => {
     setDownloading(true);
     const prefix = activeTab === "story" ? "story" : "post";
-    const count = activeTab === "story" ? 12 : 11;
+    const count = activeTab === "story" ? 13 : 12;
 
     for (let i = 1; i <= count; i++) {
       const slideId = `${prefix}-${i}`;
@@ -153,7 +153,7 @@ export default function CommunityExportPage() {
             activeTab === "story" ? "bg-[#EF4C37]" : "bg-[#333] hover:bg-[#444]"
           }`}
         >
-          Stories (9:16) - 12 slides
+          Stories (9:16) - 13 slides
         </button>
         <button
           onClick={() => setActiveTab("post")}
@@ -161,7 +161,7 @@ export default function CommunityExportPage() {
             activeTab === "post" ? "bg-[#EF4C37]" : "bg-[#333] hover:bg-[#444]"
           }`}
         >
-          Posts (1:1) - 11 slides
+          Posts (1:1) - 12 slides
         </button>
       </div>
 
@@ -381,6 +381,24 @@ export default function CommunityExportPage() {
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-12", "cfl-wrapped-story-12-outro")} />
           </SlideWrapper>
+
+          {/* Story 13: CTA - Bekijk jouw Wrapped */}
+          <SlideWrapper label="Story 13 - CTA">
+            <StorySlide id="story-13" bg="teal">
+              <div className="text-5xl mb-4">📧</div>
+              <div className="text-sm opacity-90 mb-2">Benieuwd naar jouw stats?</div>
+              <div className="text-2xl font-black">Bekijk jouw</div>
+              <div className="text-3xl font-black mt-1">CFL WRAPPED</div>
+              <StatBox style={{ marginTop: "24px" }}>
+                <div style={{ fontSize: "12px", opacity: 0.8 }}>Check je mail voor</div>
+                <div style={{ fontSize: "18px", fontWeight: 900, marginTop: "4px" }}>jouw persoonlijke code</div>
+              </StatBox>
+              <div style={{ marginTop: "16px", backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "8px 16px" }}>
+                <div style={{ fontSize: "12px", fontWeight: 700 }}>wrapped.crossfitleiden.com</div>
+              </div>
+            </StorySlide>
+            <DownloadButton onClick={() => downloadSlide("story-13", "cfl-wrapped-story-13-cta")} />
+          </SlideWrapper>
         </div>
       )}
 
@@ -567,6 +585,21 @@ export default function CommunityExportPage() {
               </StatBox>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-11", "cfl-wrapped-post-11-outro")} />
+          </SlideWrapper>
+
+          {/* Post 12: CTA - Bekijk jouw Wrapped */}
+          <SlideWrapper label="Post 12 - CTA">
+            <PostSlide id="post-12" bg="teal">
+              <div className="text-4xl mb-2">📧</div>
+              <div className="text-xs uppercase tracking-widest opacity-80">Jouw persoonlijke stats</div>
+              <div className="text-xl font-black my-2">Bekijk jouw</div>
+              <div className="text-2xl font-black">CFL WRAPPED</div>
+              <StatBox style={{ marginTop: "16px" }}>
+                <div style={{ fontSize: "11px", opacity: 0.8 }}>Check je mail voor jouw code</div>
+                <div style={{ fontSize: "14px", fontWeight: 900, marginTop: "4px" }}>wrapped.crossfitleiden.com</div>
+              </StatBox>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-12", "cfl-wrapped-post-12-cta")} />
           </SlideWrapper>
         </div>
       )}
