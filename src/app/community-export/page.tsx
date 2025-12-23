@@ -68,50 +68,46 @@ export default function CommunityExportPage() {
 
     const html2canvas = (await import("html2canvas")).default;
 
-    // Preview size vs export size - need to scale 4x for stories (270->1080), 3.375x for posts (320->1080)
+    // Export at higher resolution for quality
     const isStory = elementId.startsWith("story");
     const targetWidth = 1080;
     const targetHeight = isStory ? 1920 : 1080;
-    const scaleFactor = isStory ? 4 : 3.375;
 
-    const wrapper = document.createElement("div");
-    wrapper.style.width = `${targetWidth}px`;
-    wrapper.style.height = `${targetHeight}px`;
-    wrapper.style.position = "fixed";
-    wrapper.style.left = "-9999px";
-    wrapper.style.top = "0";
-    wrapper.style.overflow = "hidden";
-    document.body.appendChild(wrapper);
-
-    const clone = element.cloneNode(true) as HTMLElement;
-    clone.style.width = isStory ? "270px" : "320px";
-    clone.style.height = isStory ? "480px" : "320px";
-    clone.style.borderRadius = "0";
-    clone.style.transform = `scale(${scaleFactor})`;
-    clone.style.transformOrigin = "top left";
-    wrapper.appendChild(clone);
+    // Calculate scale based on original element size
+    const originalWidth = isStory ? 270 : 320;
+    const originalHeight = isStory ? 480 : 320;
+    const scaleX = targetWidth / originalWidth;
+    const scaleY = targetHeight / originalHeight;
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const canvas = await (html2canvas as any)(wrapper, {
-        width: targetWidth,
-        height: targetHeight,
-        scale: 1,
+      const canvas = await (html2canvas as any)(element, {
+        scale: scaleX, // Use scale option instead of CSS transform
+        width: originalWidth,
+        height: originalHeight,
         useCORS: true,
         backgroundColor: null,
+        logging: false,
       });
+
+      // Resize canvas to exact target dimensions if needed
+      const finalCanvas = document.createElement("canvas");
+      finalCanvas.width = targetWidth;
+      finalCanvas.height = targetHeight;
+      const ctx = finalCanvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
+      }
 
       const link = document.createElement("a");
       link.download = filename + ".png";
-      link.href = canvas.toDataURL("image/png");
+      link.href = finalCanvas.toDataURL("image/png");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Export mislukt. Probeer het opnieuw.");
-    } finally {
-      document.body.removeChild(wrapper);
+      alert("Export failed. Please try again.");
     }
   };
 
@@ -408,17 +404,17 @@ export default function CommunityExportPage() {
           {/* Post 1: Hero */}
           <SlideWrapper label="Post 1 - Hero">
             <PostSlide id="post-1" bg="coral">
-              <div className="text-xs uppercase tracking-widest opacity-80">CrossFit Leiden 2025</div>
-              <div className="text-6xl font-black my-2">{COMMUNITY_STATS.totalVisits.toLocaleString("en-US")}</div>
-              <div className="text-xl font-bold">visits</div>
-              <div className="flex gap-3 mt-4">
-                <div className="bg-white/20 rounded-lg px-4 py-2 text-center">
-                  <div className="text-xl font-black">{COMMUNITY_STATS.totalMembers}</div>
-                  <div className="text-xs opacity-80">members</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>CrossFit Leiden 2025</div>
+              <div style={{ fontSize: "48px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.totalVisits.toLocaleString("en-US")}</div>
+              <div style={{ fontSize: "18px", fontWeight: 700 }}>visits</div>
+              <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "8px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: "18px", fontWeight: 900 }}>{COMMUNITY_STATS.totalMembers}</div>
+                  <div style={{ fontSize: "10px", opacity: 0.8 }}>members</div>
                 </div>
-                <div className="bg-white/20 rounded-lg px-4 py-2 text-center">
-                  <div className="text-xl font-black">15</div>
-                  <div className="text-xs opacity-80">coaches</div>
+                <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "8px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: "18px", fontWeight: 900 }}>15</div>
+                  <div style={{ fontSize: "10px", opacity: 0.8 }}>coaches</div>
                 </div>
               </div>
             </PostSlide>
@@ -428,18 +424,18 @@ export default function CommunityExportPage() {
           {/* Post 2: Day & Time */}
           <SlideWrapper label="Post 2 - Day & Time">
             <PostSlide id="post-2" bg="teal">
-              <div className="text-4xl mb-2">📅</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Your favorite moment</div>
-              <div className="text-3xl font-black my-2">{COMMUNITY_STATS.favoriteDay}</div>
-              <div className="text-3xl font-black opacity-80">{COMMUNITY_STATS.favoriteTime}</div>
-              <div className="flex gap-3 mt-4">
-                <div className="bg-white/20 rounded-lg px-3 py-2 text-center">
-                  <div className="text-lg font-black">☀️ {COMMUNITY_STATS.earlyBirds.toLocaleString("en-US")}</div>
-                  <div className="text-xs opacity-80">early birds</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>📅</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Your favorite moment</div>
+              <div style={{ fontSize: "28px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.favoriteDay}</div>
+              <div style={{ fontSize: "28px", fontWeight: 900, opacity: 0.8 }}>{COMMUNITY_STATS.favoriteTime}</div>
+              <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "8px 12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "16px", fontWeight: 900 }}>☀️ {COMMUNITY_STATS.earlyBirds.toLocaleString("en-US")}</div>
+                  <div style={{ fontSize: "10px", opacity: 0.8 }}>early birds</div>
                 </div>
-                <div className="bg-white/20 rounded-lg px-3 py-2 text-center">
-                  <div className="text-lg font-black">🌙 {COMMUNITY_STATS.nightOwls.toLocaleString("en-US")}</div>
-                  <div className="text-xs opacity-80">night owls</div>
+                <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "8px 12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "16px", fontWeight: 900 }}>🌙 {COMMUNITY_STATS.nightOwls.toLocaleString("en-US")}</div>
+                  <div style={{ fontSize: "10px", opacity: 0.8 }}>night owls</div>
                 </div>
               </div>
             </PostSlide>
@@ -449,9 +445,9 @@ export default function CommunityExportPage() {
           {/* Post 3: Popular Class */}
           <SlideWrapper label="Post 3 - Popular Class">
             <PostSlide id="post-3" bg="coral">
-              <div className="text-4xl mb-2">🏋️</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Most popular class</div>
-              <div className="text-2xl font-black my-2">{COMMUNITY_STATS.popularClass}</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏋️</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Most popular class</div>
+              <div style={{ fontSize: "20px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.popularClass}</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <span style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.popularClassVisits.toLocaleString("en-US")}</span>
                 <br />
@@ -464,9 +460,9 @@ export default function CommunityExportPage() {
           {/* Post 4: Busiest Day */}
           <SlideWrapper label="Post 4 - Busiest Day">
             <PostSlide id="post-4" bg="teal">
-              <div className="text-4xl mb-2">🔥</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Busiest day</div>
-              <div className="text-xl font-black my-2">{COMMUNITY_STATS.busiestDay}</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>🔥</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Busiest day</div>
+              <div style={{ fontSize: "18px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.busiestDay}</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.busiestDayCount}</span>
                 <br />
@@ -479,9 +475,9 @@ export default function CommunityExportPage() {
           {/* Post 5: Quietest Day */}
           <SlideWrapper label="Post 5 - Quietest Day">
             <PostSlide id="post-5" bg="purple">
-              <div className="text-4xl mb-2">😴</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Quietest day</div>
-              <div className="text-xl font-black my-2">{COMMUNITY_STATS.quietestDay}</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>😴</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Quietest day</div>
+              <div style={{ fontSize: "18px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.quietestDay}</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.quietestDayCount}</span>
                 <br />
@@ -495,10 +491,10 @@ export default function CommunityExportPage() {
           {/* Post 6: Busiest Class */}
           <SlideWrapper label="Post 6 - Busiest Class">
             <PostSlide id="post-6" bg="yellow">
-              <div className="text-4xl mb-2">🏆</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Busiest class</div>
-              <div className="text-lg font-black">{COMMUNITY_STATS.busiestClass}</div>
-              <div className="text-sm opacity-70">{COMMUNITY_STATS.busiestClassDate}</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏆</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Busiest class</div>
+              <div style={{ fontSize: "16px", fontWeight: 900 }}>{COMMUNITY_STATS.busiestClass}</div>
+              <div style={{ fontSize: "14px", opacity: 0.7 }}>{COMMUNITY_STATS.busiestClassDate}</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.busiestClassAttendees}</span>
                 <br />
@@ -511,9 +507,9 @@ export default function CommunityExportPage() {
           {/* Post 7: Top Coaches */}
           <SlideWrapper label="Post 7 - Coaches">
             <PostSlide id="post-7" bg="coral">
-              <div className="text-4xl mb-2">🏆</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Most group classes</div>
-              <div className="w-full max-w-[220px] flex flex-col gap-2 mt-3">
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏆</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Most group classes</div>
+              <div style={{ width: "100%", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "8px", marginTop: "12px" }}>
                 {topCoaches.map((coach, i) => (
                   <div key={coach.voornaam} style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "10px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontWeight: 700 }}>{["🥇", "🥈", "🥉"][i]} {coach.voornaam}</span>
@@ -529,8 +525,8 @@ export default function CommunityExportPage() {
           {/* Post 8: Early Birds vs Night Owls */}
           <SlideWrapper label="Post 8 - Times">
             <PostSlide id="post-8" bg="teal">
-              <div className="text-4xl mb-2">⏰</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">When do you train?</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>⏰</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>When do you train?</div>
               <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
                 <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "12px", textAlign: "center" }}>
                   <div style={{ fontSize: "18px", fontWeight: 900 }}>☀️ {COMMUNITY_STATS.earlyBirds.toLocaleString("en-US")}</div>
@@ -548,10 +544,10 @@ export default function CommunityExportPage() {
           {/* Post 9: Gym Buddies */}
           <SlideWrapper label="Post 9 - Buddies">
             <PostSlide id="post-9" bg="purple">
-              <div className="text-4xl mb-2">🤝</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Gym Buddies</div>
-              <div className="text-6xl font-black my-2">{COMMUNITY_STATS.gymBuddyDuos}</div>
-              <div className="text-sm font-bold">duos with 10+ sessions together</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>🤝</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Gym Buddies</div>
+              <div style={{ fontSize: "48px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.gymBuddyDuos}</div>
+              <div style={{ fontSize: "14px", fontWeight: 700 }}>duos with 10+ sessions together</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <div style={{ fontSize: "12px", opacity: 0.7 }}>Strongest buddies</div>
                 <div style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.strongestBuddySessions}x together</div>
@@ -563,10 +559,10 @@ export default function CommunityExportPage() {
           {/* Post 10: Cancellations */}
           <SlideWrapper label="Post 10 - Cancellations">
             <PostSlide id="post-10" bg="dark">
-              <div className="text-4xl mb-2">😅</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">And yes...</div>
-              <div className="text-5xl font-black my-2">{COMMUNITY_STATS.cancellations.toLocaleString("en-US")}</div>
-              <div className="text-lg font-bold">cancellations</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>😅</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>And yes...</div>
+              <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.cancellations.toLocaleString("en-US")}</div>
+              <div style={{ fontSize: "16px", fontWeight: 700 }}>cancellations</div>
               <StatBox style={{ marginTop: "16px" }}>Better in 2026? 😉</StatBox>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-10", "cfl-wrapped-post-10-cancellations")} />
@@ -575,10 +571,10 @@ export default function CommunityExportPage() {
           {/* Post 11: Thank you */}
           <SlideWrapper label="Post 11 - Outro">
             <PostSlide id="post-11" bg="coral">
-              <div className="text-4xl mb-2">❤️</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Thank you for 2025</div>
-              <div className="text-xl font-black my-3">Here&apos;s to a strong</div>
-              <div className="text-[56px] font-black">2026</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>❤️</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Thank you for 2025</div>
+              <div style={{ fontSize: "18px", fontWeight: 900, margin: "12px 0" }}>Here&apos;s to a strong</div>
+              <div style={{ fontSize: "48px", fontWeight: 900 }}>2026</div>
               <StatBox style={{ marginTop: "16px", fontSize: "14px" }}>
                 Happy holidays<br />
                 See you on the floor 💪
@@ -590,10 +586,10 @@ export default function CommunityExportPage() {
           {/* Post 12: CTA - View your Wrapped */}
           <SlideWrapper label="Post 12 - CTA">
             <PostSlide id="post-12" bg="teal">
-              <div className="text-4xl mb-2">📧</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Your personal stats</div>
-              <div className="text-xl font-black my-2">View your</div>
-              <div className="text-2xl font-black">CFL WRAPPED</div>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>📧</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Your personal stats</div>
+              <div style={{ fontSize: "18px", fontWeight: 900, margin: "8px 0" }}>View your</div>
+              <div style={{ fontSize: "22px", fontWeight: 900 }}>CFL WRAPPED</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <div style={{ fontSize: "11px", opacity: 0.8 }}>Check your email for your code</div>
                 <div style={{ fontSize: "14px", fontWeight: 900, marginTop: "4px" }}>wrapped.crossfitleiden.com</div>
