@@ -659,7 +659,8 @@ export default function WrappedSlides({ member, onBack }: Props) {
     wrapper.appendChild(clone);
 
     try {
-      const canvas = await html2canvas(wrapper, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const canvas = await (html2canvas as any)(wrapper, {
         width: 1080,
         height: 1920,
         scale: 1,
@@ -836,7 +837,8 @@ export default function WrappedSlides({ member, onBack }: Props) {
       clone.style.height = "100%";
       wrapper.appendChild(clone);
 
-      const canvas = await html2canvas(wrapper, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const canvas = await (html2canvas as any)(wrapper, {
         width: 1080,
         height: 1920,
         scale: 1,
@@ -846,7 +848,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
 
       document.body.removeChild(wrapper);
 
-      canvas.toBlob(async (blob) => {
+      canvas.toBlob(async (blob: Blob | null) => {
         if (!blob) return;
 
         if (navigator.share && navigator.canShare) {
