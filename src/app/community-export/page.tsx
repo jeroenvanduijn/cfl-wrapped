@@ -68,10 +68,11 @@ export default function CommunityExportPage() {
 
     const html2canvas = (await import("html2canvas")).default;
 
-    // Create wrapper at target resolution
+    // Preview size vs export size - need to scale 4x for stories (270->1080), 3.375x for posts (320->1080)
     const isStory = elementId.startsWith("story");
     const targetWidth = 1080;
     const targetHeight = isStory ? 1920 : 1080;
+    const scaleFactor = isStory ? 4 : 3.375;
 
     const wrapper = document.createElement("div");
     wrapper.style.width = `${targetWidth}px`;
@@ -79,12 +80,15 @@ export default function CommunityExportPage() {
     wrapper.style.position = "fixed";
     wrapper.style.left = "-9999px";
     wrapper.style.top = "0";
+    wrapper.style.overflow = "hidden";
     document.body.appendChild(wrapper);
 
     const clone = element.cloneNode(true) as HTMLElement;
-    clone.style.width = "100%";
-    clone.style.height = "100%";
+    clone.style.width = isStory ? "270px" : "320px";
+    clone.style.height = isStory ? "480px" : "320px";
     clone.style.borderRadius = "0";
+    clone.style.transform = `scale(${scaleFactor})`;
+    clone.style.transformOrigin = "top left";
     wrapper.appendChild(clone);
 
     try {
