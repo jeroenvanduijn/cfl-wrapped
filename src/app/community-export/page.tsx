@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
-import html2canvas from "html2canvas";
+import { useState } from "react";
 import coachData from "@/data/coach-wrapped-data.json";
 
 // Community stats - update these with real data
@@ -9,12 +8,12 @@ const COMMUNITY_STATS = {
   totaalBezoeken: 39326,
   totaalLeden: 480,
   populairsteLes: "CFL Training",
-  populairsteLesBezoeken: 25000, // Estimate based on data
+  populairsteLesBezoeken: 25000,
   favorieteDay: "Woensdag",
   favoriteDayCount: 8500,
   favoriteTijd: "09:00",
-  earlyBirds: 12000, // voor 09:00
-  nightOwls: 8000, // na 19:00
+  earlyBirds: 12000,
+  nightOwls: 8000,
   druksteDag: "6 januari 2025",
   druksteDagCount: 250,
   rustigsteDag: "25 december 2025",
@@ -39,33 +38,76 @@ const topCoaches = coaches
 
 type SlideType = "story" | "post";
 
+const CAROUSEL_CAPTION = `🎉 CROSSFIT LEIDEN WRAPPED 2025
+
+Wat. Een. Jaar.
+
+${COMMUNITY_STATS.totaalBezoeken.toLocaleString("nl-NL")} bezoeken. ${COMMUNITY_STATS.totaalLeden} leden. 15 coaches.
+
+🏆 Top Coaches:
+🥇 ${topCoaches[0]?.voornaam} - ${topCoaches[0]?.lessen_gegeven} lessen
+🥈 ${topCoaches[1]?.voornaam} - ${topCoaches[1]?.lessen_gegeven} lessen
+🥉 ${topCoaches[2]?.voornaam} - ${topCoaches[2]?.lessen_gegeven} lessen
+
+🤝 ${COMMUNITY_STATS.gymBuddyDuos} gym buddy duo's (10+ sessies samen)
+
+Bedankt voor elk bezoek, elke rep, elke druppel zweet. 💪
+
+Fijne feestdagen en tot in 2026! 🎉
+
+#CrossFitLeiden #Wrapped2025 #Community #CFLFamily`;
+
 export default function CommunityExportPage() {
   const [activeTab, setActiveTab] = useState<SlideType>("story");
   const [downloading, setDownloading] = useState(false);
+  const [captionCopied, setCaptionCopied] = useState(false);
 
   const downloadSlide = async (elementId: string, filename: string) => {
     const element = document.getElementById(elementId);
     if (!element) return;
 
+    const html2canvas = (await import("html2canvas")).default;
+
+    // Create wrapper at target resolution
     const isStory = elementId.startsWith("story");
-    const scale = isStory ? 4 : 3.375;
+    const targetWidth = 1080;
+    const targetHeight = isStory ? 1920 : 1080;
+
+    const wrapper = document.createElement("div");
+    wrapper.style.width = `${targetWidth}px`;
+    wrapper.style.height = `${targetHeight}px`;
+    wrapper.style.position = "fixed";
+    wrapper.style.left = "-9999px";
+    wrapper.style.top = "0";
+    document.body.appendChild(wrapper);
+
+    const clone = element.cloneNode(true) as HTMLElement;
+    clone.style.width = "100%";
+    clone.style.height = "100%";
+    clone.style.borderRadius = "0";
+    wrapper.appendChild(clone);
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const canvas = await (html2canvas as any)(element, {
-        scale: scale,
+      const canvas = await (html2canvas as any)(wrapper, {
+        width: targetWidth,
+        height: targetHeight,
+        scale: 1,
         useCORS: true,
-        allowTaint: true,
         backgroundColor: null,
       });
 
       const link = document.createElement("a");
       link.download = filename + ".png";
       link.href = canvas.toDataURL("image/png");
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error("Export failed:", error);
       alert("Export mislukt. Probeer het opnieuw.");
+    } finally {
+      document.body.removeChild(wrapper);
     }
   };
 
@@ -78,20 +120,15 @@ export default function CommunityExportPage() {
       const slideId = `${prefix}-${i}`;
       const filename = `cfl-wrapped-${slideId}`;
       await downloadSlide(slideId, filename);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 800));
     }
     setDownloading(false);
   };
 
-  const copyCaption = (caption: string, buttonId: string) => {
-    navigator.clipboard.writeText(caption).then(() => {
-      const btn = document.getElementById(buttonId);
-      if (btn) {
-        btn.textContent = "✅ Gekopieerd!";
-        setTimeout(() => {
-          btn.textContent = "📋 Kopieer";
-        }, 2000);
-      }
+  const copyCaption = () => {
+    navigator.clipboard.writeText(CAROUSEL_CAPTION).then(() => {
+      setCaptionCopied(true);
+      setTimeout(() => setCaptionCopied(false), 2000);
     });
   };
 
@@ -133,6 +170,26 @@ export default function CommunityExportPage() {
         {downloading ? "⏳ Downloaden..." : "⬇️ Download Alle Slides"}
       </button>
 
+      {/* Caption for Posts */}
+      {activeTab === "post" && (
+        <div className="max-w-xl mx-auto mb-10 bg-[#1a1a1a] border border-[#333] rounded-lg p-4">
+          <div className="text-sm text-gray-500 uppercase tracking-wider mb-3">
+            Caption voor carousel post:
+          </div>
+          <div className="text-sm text-gray-300 leading-relaxed whitespace-pre-line max-h-[200px] overflow-y-auto mb-4 font-mono">
+            {CAROUSEL_CAPTION}
+          </div>
+          <button
+            onClick={copyCaption}
+            className={`w-full py-2.5 rounded-lg font-medium transition-colors ${
+              captionCopied ? "bg-[#0CBABA]" : "bg-[#333] hover:bg-[#444]"
+            }`}
+          >
+            {captionCopied ? "✅ Gekopieerd!" : "📋 Kopieer Caption"}
+          </button>
+        </div>
+      )}
+
       {/* Stories */}
       {activeTab === "story" && (
         <div className="flex flex-wrap gap-8 justify-center">
@@ -146,17 +203,6 @@ export default function CommunityExportPage() {
               <StatBox className="mt-6">Wat een jaar was dit...</StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-1", "cfl-wrapped-story-1-intro")} />
-            <CaptionBox
-              id="caption-1"
-              caption={`🎉 CROSSFIT LEIDEN WRAPPED 2025
-
-Wat. Een. Jaar.
-
-Swipe voor jullie cijfers ➡️
-
-#CrossFitLeiden #Wrapped2025 #Community`}
-              onCopy={(c) => copyCaption(c, "copy-btn-1")}
-            />
           </SlideWrapper>
 
           {/* Story 2: Totaal bezoeken */}
@@ -171,17 +217,6 @@ Swipe voor jullie cijfers ➡️
               <StatBox>met {COMMUNITY_STATS.totaalLeden} leden</StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-2", "cfl-wrapped-story-2-bezoeken")} />
-            <CaptionBox
-              id="caption-2"
-              caption={`💪 ${COMMUNITY_STATS.totaalBezoeken.toLocaleString("nl-NL")} BEZOEKEN
-
-Samen. Met ${COMMUNITY_STATS.totaalLeden} leden.
-
-Dat is gemiddeld ${Math.round(COMMUNITY_STATS.totaalBezoeken / COMMUNITY_STATS.totaalLeden)} bezoeken per lid. Jullie zijn machines.
-
-#CrossFitLeiden #Wrapped2025`}
-              onCopy={(c) => copyCaption(c, "copy-btn-2")}
-            />
           </SlideWrapper>
 
           {/* Story 3: Populairste les */}
@@ -197,17 +232,6 @@ Dat is gemiddeld ${Math.round(COMMUNITY_STATS.totaalBezoeken / COMMUNITY_STATS.t
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-3", "cfl-wrapped-story-3-les")} />
-            <CaptionBox
-              id="caption-3"
-              caption={`🏋️ ${COMMUNITY_STATS.populairsteLes.toUpperCase()} = FAVORIET
-
-${COMMUNITY_STATS.populairsteLesBezoeken.toLocaleString("nl-NL")} bezoeken aan onze signature class.
-
-Jullie weten wat werkt 💪
-
-#CrossFitLeiden #CFLTraining`}
-              onCopy={(c) => copyCaption(c, "copy-btn-3")}
-            />
           </SlideWrapper>
 
           {/* Story 4: Favoriete dag */}
@@ -223,17 +247,6 @@ Jullie weten wat werkt 💪
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-4", "cfl-wrapped-story-4-dag")} />
-            <CaptionBox
-              id="caption-4"
-              caption={`📅 ${COMMUNITY_STATS.favorieteDay.toUpperCase()} = JULLIE DAG
-
-${COMMUNITY_STATS.favoriteDayCount.toLocaleString("nl-NL")} bezoeken op ${COMMUNITY_STATS.favorieteDay.toLowerCase()}.
-
-Midden in de week even gas geven. Slimme keuze.
-
-#CrossFitLeiden #WoensdagMotivatie`}
-              onCopy={(c) => copyCaption(c, "copy-btn-4")}
-            />
           </SlideWrapper>
 
           {/* Story 5: Favoriete tijd */}
@@ -254,18 +267,6 @@ Midden in de week even gas geven. Slimme keuze.
               </div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-5", "cfl-wrapped-story-5-tijd")} />
-            <CaptionBox
-              id="caption-5"
-              caption={`⏰ ${COMMUNITY_STATS.favoriteTijd} = PRIME TIME
-
-${COMMUNITY_STATS.earlyBirds.toLocaleString("nl-NL")} early birds (vóór 9u)
-${COMMUNITY_STATS.nightOwls.toLocaleString("nl-NL")} night owls (na 19u)
-
-Of je nou 's ochtends of 's avonds traint - jullie kwamen opdagen 💪
-
-#CrossFitLeiden #EarlyBird #NightOwl`}
-              onCopy={(c) => copyCaption(c, "copy-btn-5")}
-            />
           </SlideWrapper>
 
           {/* Story 6: Drukste Dag */}
@@ -282,17 +283,6 @@ Of je nou 's ochtends of 's avonds traint - jullie kwamen opdagen 💪
               <div className="text-xs opacity-70 mt-3">Wat een start van het jaar! 💪</div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-6", "cfl-wrapped-story-6-drukste-dag")} />
-            <CaptionBox
-              id="caption-6"
-              caption={`🔥 DRUKSTE DAG VAN HET JAAR
-
-${COMMUNITY_STATS.druksteDag} - ${COMMUNITY_STATS.druksteDagCount} bezoeken
-
-Wat een manier om 2025 te starten! De gym was PACKED.
-
-#CrossFitLeiden #Wrapped2025 #RecordDay`}
-              onCopy={(c) => copyCaption(c, "copy-btn-6")}
-            />
           </SlideWrapper>
 
           {/* Story 7: Rustigste Dag */}
@@ -309,17 +299,6 @@ Wat een manier om 2025 te starten! De gym was PACKED.
               <div className="text-xs opacity-70 mt-3">Kerst = rust... snappen we 😉</div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-7", "cfl-wrapped-story-7-rustigste-dag")} />
-            <CaptionBox
-              id="caption-7"
-              caption={`😴 RUSTIGSTE DAG VAN HET JAAR
-
-${COMMUNITY_STATS.rustigsteDag} - ${COMMUNITY_STATS.rustigsteDagCount} bezoeken
-
-Kerst = rustdag? Voor ${COMMUNITY_STATS.rustigsteDagCount} van jullie in ieder geval niet 💪
-
-#CrossFitLeiden #Wrapped2025 #ChristmasWOD`}
-              onCopy={(c) => copyCaption(c, "copy-btn-7")}
-            />
           </SlideWrapper>
 
           {/* Story 8: Drukste Les */}
@@ -336,19 +315,6 @@ Kerst = rustdag? Voor ${COMMUNITY_STATS.rustigsteDagCount} van jullie in ieder g
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-8", "cfl-wrapped-story-8-drukste-les")} />
-            <CaptionBox
-              id="caption-8"
-              caption={`🏆 DRUKSTE LES VAN HET JAAR
-
-${COMMUNITY_STATS.druksteLes}
-${COMMUNITY_STATS.druksteLesDate} om ${COMMUNITY_STATS.druksteLesTijd}
-${COMMUNITY_STATS.druksteLesDeelnemers} deelnemers
-
-Een volle bak voor een speciale workout. Dit is community 💪
-
-#CrossFitLeiden #Wrapped2025`}
-              onCopy={(c) => copyCaption(c, "copy-btn-8")}
-            />
           </SlideWrapper>
 
           {/* Story 9: Top Coaches */}
@@ -367,21 +333,6 @@ Een volle bak voor een speciale workout. Dit is community 💪
               <div className="text-xs opacity-70 mt-3">lessen gegeven</div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-9", "cfl-wrapped-story-9-coaches")} />
-            <CaptionBox
-              id="caption-9"
-              caption={`🏆 JULLIE TOP COACHES 2025
-
-🥇 ${topCoaches[0].voornaam} - ${topCoaches[0].lessen_gegeven} lessen
-🥈 ${topCoaches[1].voornaam} - ${topCoaches[1].lessen_gegeven} lessen
-🥉 ${topCoaches[2].voornaam} - ${topCoaches[2].lessen_gegeven} lessen
-
-Uren vroeg op. Uren tellen. Uren "nog één rep!"
-
-Bedankt team 🙏
-
-#CrossFitLeiden #Coaches #TeamCFL`}
-              onCopy={(c) => copyCaption(c, "copy-btn-9")}
-            />
           </SlideWrapper>
 
           {/* Story 10: Buddies */}
@@ -399,21 +350,6 @@ Bedankt team 🙏
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-10", "cfl-wrapped-story-10-buddies")} />
-            <CaptionBox
-              id="caption-10"
-              caption={`🤝 ${COMMUNITY_STATS.gymBuddyDuos} GYM BUDDY DUO'S
-
-Dit is waar het om draait.
-
-${COMMUNITY_STATS.gymBuddyDuos} duo's die minstens 10x samen trainden. De sterkste? ${COMMUNITY_STATS.sterksteBuddySessies} sessies samen.
-
-Niet alleen trainen. Samen trainen.
-
-Tag je gym buddy! 👇
-
-#CrossFitLeiden #GymBuddy #StrongerTogether`}
-              onCopy={(c) => copyCaption(c, "copy-btn-10")}
-            />
           </SlideWrapper>
 
           {/* Story 11: Afmeldingen */}
@@ -426,19 +362,6 @@ Tag je gym buddy! 👇
               <StatBox>In 2026 doen we beter... toch? 😉</StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-11", "cfl-wrapped-story-11-afmeldingen")} />
-            <CaptionBox
-              id="caption-11"
-              caption={`😅 EN JA...
-
-${COMMUNITY_STATS.afmeldingen.toLocaleString("nl-NL")} afmeldingen.
-
-We snappen het. Het leven. Het weer. De snooze button.
-
-In 2026 doen we beter... toch? 😉
-
-#CrossFitLeiden #Wrapped2025 #Eerlijk`}
-              onCopy={(c) => copyCaption(c, "copy-btn-11")}
-            />
           </SlideWrapper>
 
           {/* Story 12: Outro */}
@@ -453,22 +376,6 @@ In 2026 doen we beter... toch? 😉
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-12", "cfl-wrapped-story-12-outro")} />
-            <CaptionBox
-              id="caption-12"
-              caption={`❤️ BEDANKT
-
-Voor elke burpee.
-Voor elke PR.
-Voor elke high five.
-Voor elke keer dat je er was.
-
-Jullie maken CrossFit Leiden.
-
-Fijne feestdagen en tot in 2026! 🎉
-
-#CrossFitLeiden #Wrapped2025 #ThankYou #FijneFeestdagen`}
-              onCopy={(c) => copyCaption(c, "copy-btn-12")}
-            />
           </SlideWrapper>
         </div>
       )}
@@ -494,19 +401,6 @@ Fijne feestdagen en tot in 2026! 🎉
               </div>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-1", "cfl-wrapped-post-1-hero")} />
-            <CaptionBox
-              id="caption-post-1"
-              caption={`🎉 WAT. EEN. JAAR.
-
-${COMMUNITY_STATS.totaalBezoeken.toLocaleString("nl-NL")} bezoeken. ${COMMUNITY_STATS.totaalLeden} leden. 15 coaches.
-
-Dit zijn jullie cijfers. Dit is onze community.
-
-Bedankt voor elk bezoek, elke rep, elke druppel zweet. 💪
-
-#CrossFitLeiden #Wrapped2025 #Community #CFLFamily`}
-              onCopy={(c) => copyCaption(c, "copy-btn-post-1")}
-            />
           </SlideWrapper>
 
           {/* Post 2: Dag & Tijd */}
@@ -528,21 +422,6 @@ Bedankt voor elk bezoek, elke rep, elke druppel zweet. 💪
               </div>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-2", "cfl-wrapped-post-2-dag-tijd")} />
-            <CaptionBox
-              id="caption-post-2"
-              caption={`📅 ${COMMUNITY_STATS.favorieteDay.toUpperCase()} ${COMMUNITY_STATS.favoriteTijd}
-
-Dat was jullie moment. Week in, week uit.
-
-Maar of je nou early bird bent (${COMMUNITY_STATS.earlyBirds.toLocaleString("nl-NL")} leden!) of night owl (${COMMUNITY_STATS.nightOwls.toLocaleString("nl-NL")} leden) - jullie kwamen opdagen.
-
-Elke. Keer. Weer.
-
-Ben jij team ☀️ of team 🌙?
-
-#CrossFitLeiden #WoensdagMotivatie #GymLife`}
-              onCopy={(c) => copyCaption(c, "copy-btn-post-2")}
-            />
           </SlideWrapper>
 
           {/* Post 3: Coaches */}
@@ -561,23 +440,6 @@ Ben jij team ☀️ of team 🌙?
               <div className="text-xs opacity-70 mt-2">lessen gegeven dit jaar</div>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-3", "cfl-wrapped-post-3-coaches")} />
-            <CaptionBox
-              id="caption-post-3"
-              caption={`🏆 JULLIE TOP COACHES
-
-🥇 ${topCoaches[0].voornaam} - ${topCoaches[0].lessen_gegeven} lessen
-🥈 ${topCoaches[1].voornaam} - ${topCoaches[1].lessen_gegeven} lessen
-🥉 ${topCoaches[2].voornaam} - ${topCoaches[2].lessen_gegeven} lessen
-
-Deze drie hebben jullie door 2025 heen gecoacht.
-
-Uren vroeg op. Uren stemmen tellen. Uren "nog één rep!"
-
-Bedankt team 🙏
-
-#CrossFitLeiden #Coaches #TeamCFL #ThankYou`}
-              onCopy={(c) => copyCaption(c, "copy-btn-post-3")}
-            />
           </SlideWrapper>
 
           {/* Post 4: Buddies */}
@@ -593,23 +455,6 @@ Bedankt team 🙏
               </StatBox>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-4", "cfl-wrapped-post-4-buddies")} />
-            <CaptionBox
-              id="caption-post-4"
-              caption={`🤝 ${COMMUNITY_STATS.gymBuddyDuos} GYM BUDDY DUO'S
-
-Dit is waar CrossFit om draait.
-
-Niet alleen trainen. Samen trainen.
-
-${COMMUNITY_STATS.gymBuddyDuos} duo's die minimaal 10 keer samen hebben getraind. En de sterkste buddies? ${COMMUNITY_STATS.sterksteBuddySessies} sessies samen.
-
-Dat is commitment. Dat is community. 💪
-
-Wie is jouw gym buddy? Tag ze! 👇
-
-#CrossFitLeiden #GymBuddy #Community #StrongerTogether`}
-              onCopy={(c) => copyCaption(c, "copy-btn-post-4")}
-            />
           </SlideWrapper>
 
           {/* Post 5: Thank you */}
@@ -625,22 +470,6 @@ Wie is jouw gym buddy? Tag ze! 👇
               </StatBox>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-5", "cfl-wrapped-post-5-outro")} />
-            <CaptionBox
-              id="caption-post-5"
-              caption={`❤️ BEDANKT
-
-Voor elke burpee.
-Voor elke PR.
-Voor elke high five.
-Voor elke keer dat je er was.
-
-Jullie maken CrossFit Leiden wat het is.
-
-Fijne feestdagen en tot in 2026! 🎉
-
-#CrossFitLeiden #Wrapped2025 #ThankYou #HappyHolidays #FijneFeestdagen #2026`}
-              onCopy={(c) => copyCaption(c, "copy-btn-post-5")}
-            />
           </SlideWrapper>
         </div>
       )}
@@ -717,23 +546,5 @@ function DownloadButton({ onClick }: { onClick: () => void }) {
     >
       Download PNG
     </button>
-  );
-}
-
-function CaptionBox({ id, caption, onCopy }: { id: string; caption: string; onCopy: (caption: string) => void }) {
-  return (
-    <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-3 w-[270px]">
-      <div className="text-[11px] text-gray-500 uppercase tracking-wider mb-2">Caption:</div>
-      <div className="text-xs text-gray-400 leading-relaxed whitespace-pre-line max-h-[150px] overflow-y-auto mb-2.5">
-        {caption}
-      </div>
-      <button
-        id={`copy-btn-${id}`}
-        onClick={() => onCopy(caption)}
-        className="w-full py-2 bg-[#333] rounded-md text-xs hover:bg-[#444] transition-colors"
-      >
-        📋 Kopieer
-      </button>
-    </div>
   );
 }
