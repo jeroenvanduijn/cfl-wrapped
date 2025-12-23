@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
+import Redis from "ioredis";
 
 type View = {
   memberId: string;
@@ -11,7 +11,12 @@ type View = {
 
 const VIEWS_KEY = "cfl-wrapped-views";
 
+function getRedis() {
+  return new Redis(process.env.REDIS_URL!);
+}
+
 export async function POST(request: NextRequest) {
+  const redis = getRedis();
   try {
     const body = await request.json();
     const { memberId, voornaam, code } = body;
@@ -21,7 +26,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get current views
-    const views: View[] = (await kv.get(VIEWS_KEY)) || [];
+    const data = await redis.get(VIEWS_KEY);
+    const views: View[] = data ? JSON.parse(data) : [];
 
     // Check if member already viewed (by code to handle both members and coaches)
     const existingIndex = views.findIndex((v) => v.code === code);
@@ -41,22 +47,28 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Save back to KV
-    await kv.set(VIEWS_KEY, views);
+    // Save back to Redis
+    await redis.set(VIEWS_KEY, JSON.stringify(views));
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error saving view:", error);
     return NextResponse.json({ error: "Failed to save view" }, { status: 500 });
+  } finally {
+    redis.disconnect();
   }
 }
 
 export async function GET() {
+  const redis = getRedis();
   try {
-    const views: View[] = (await kv.get(VIEWS_KEY)) || [];
+    const data = await redis.get(VIEWS_KEY);
+    const views: View[] = data ? JSON.parse(data) : [];
     return NextResponse.json(views);
   } catch (error) {
     console.error("Error getting views:", error);
     return NextResponse.json({ error: "Failed to get views" }, { status: 500 });
+  } finally {
+    redis.disconnect();
   }
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
+import Redis from "ioredis";
 
 type Response = {
   memberId: number;
@@ -11,7 +11,12 @@ type Response = {
 
 const RESPONSES_KEY = "cfl-wrapped-responses";
 
+function getRedis() {
+  return new Redis(process.env.REDIS_URL!);
+}
+
 export async function POST(request: NextRequest) {
+  const redis = getRedis();
   try {
     const body = await request.json();
     const { memberId, voornaam, voornemen2026, grootsteWin2025 } = body;
@@ -21,7 +26,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get current responses
-    const responses: Response[] = (await kv.get(RESPONSES_KEY)) || [];
+    const data = await redis.get(RESPONSES_KEY);
+    const responses: Response[] = data ? JSON.parse(data) : [];
 
     // Check if member already submitted
     const existingIndex = responses.findIndex((r) => r.memberId === memberId);
@@ -40,22 +46,28 @@ export async function POST(request: NextRequest) {
       responses.push(newResponse);
     }
 
-    // Save back to KV
-    await kv.set(RESPONSES_KEY, responses);
+    // Save back to Redis
+    await redis.set(RESPONSES_KEY, JSON.stringify(responses));
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error saving response:", error);
     return NextResponse.json({ error: "Failed to save response" }, { status: 500 });
+  } finally {
+    redis.disconnect();
   }
 }
 
 export async function GET() {
+  const redis = getRedis();
   try {
-    const responses: Response[] = (await kv.get(RESPONSES_KEY)) || [];
+    const data = await redis.get(RESPONSES_KEY);
+    const responses: Response[] = data ? JSON.parse(data) : [];
     return NextResponse.json(responses);
   } catch (error) {
     console.error("Error getting responses:", error);
     return NextResponse.json({ error: "Failed to get responses" }, { status: 500 });
+  } finally {
+    redis.disconnect();
   }
 }
