@@ -252,17 +252,17 @@ export default function CommunityExportPage() {
           {/* Story 5: Favorite time */}
           <SlideWrapper label="Story 5 - Favorite Time">
             <StorySlide id="story-5" bg="purple">
-              <div className="text-5xl mb-4">⏰</div>
-              <div className="text-sm opacity-90 mb-2">Most popular time</div>
-              <div className="text-5xl font-black">{COMMUNITY_STATS.favoriteTime}</div>
-              <div className="flex gap-3 mt-4">
-                <div className="bg-white/20 rounded-lg px-3 py-2 text-center">
-                  <div className="text-lg font-black">☀️ {COMMUNITY_STATS.earlyBirds.toLocaleString("en-US")}</div>
-                  <div className="text-xs opacity-80">early birds</div>
+              <div style={{ fontSize: "48px", marginBottom: "16px" }}>⏰</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Most popular time</div>
+              <div style={{ fontSize: "48px", fontWeight: 900 }}>{COMMUNITY_STATS.favoriteTime}</div>
+              <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "8px 12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "18px", fontWeight: 900 }}>☀️ {COMMUNITY_STATS.earlyBirds.toLocaleString("en-US")}</div>
+                  <div style={{ fontSize: "12px", opacity: 0.8 }}>early birds</div>
                 </div>
-                <div className="bg-white/20 rounded-lg px-3 py-2 text-center">
-                  <div className="text-lg font-black">🌙 {COMMUNITY_STATS.nightOwls.toLocaleString("en-US")}</div>
-                  <div className="text-xs opacity-80">night owls</div>
+                <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "8px 12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "18px", fontWeight: 900 }}>🌙 {COMMUNITY_STATS.nightOwls.toLocaleString("en-US")}</div>
+                  <div style={{ fontSize: "12px", opacity: 0.8 }}>night owls</div>
                 </div>
               </div>
             </StorySlide>
@@ -320,13 +320,13 @@ export default function CommunityExportPage() {
           {/* Story 9: Top Coaches */}
           <SlideWrapper label="Story 9 - Top Coaches">
             <StorySlide id="story-9" bg="coral">
-              <div className="text-5xl mb-4">🏆</div>
-              <div className="text-sm opacity-90 mb-2">Most group classes</div>
-              <div className="w-full max-w-[220px] flex flex-col gap-2 mt-4">
+              <div style={{ fontSize: "48px", marginBottom: "16px" }}>🏆</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Most group classes</div>
+              <div style={{ width: "100%", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px" }}>
                 {topCoaches.map((coach, i) => (
-                  <div key={coach.voornaam} className="bg-white/20 rounded-lg px-4 py-2.5 flex justify-between items-center">
-                    <span className="font-bold">{["🥇", "🥈", "🥉"][i]} {coach.voornaam}</span>
-                    <span className="opacity-70 text-sm">{coach.lessen_gegeven}</span>
+                  <div key={coach.voornaam} style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "10px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontWeight: 700 }}>{["🥇", "🥈", "🥉"][i]} {coach.voornaam}</span>
+                    <span style={{ opacity: 0.7, fontSize: "14px" }}>{coach.lessen_gegeven}</span>
                   </div>
                 ))}
               </div>
