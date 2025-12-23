@@ -114,7 +114,7 @@ export default function CommunityExportPage() {
   const downloadAll = async () => {
     setDownloading(true);
     const prefix = activeTab === "story" ? "story" : "post";
-    const count = activeTab === "story" ? 12 : 5;
+    const count = activeTab === "story" ? 12 : 11;
 
     for (let i = 1; i <= count; i++) {
       const slideId = `${prefix}-${i}`;
@@ -157,7 +157,7 @@ export default function CommunityExportPage() {
             activeTab === "post" ? "bg-[#EF4C37]" : "bg-[#333] hover:bg-[#444]"
           }`}
         >
-          Posts (1:1) - 5 slides
+          Posts (1:1) - 11 slides
         </button>
       </div>
 
@@ -200,7 +200,7 @@ export default function CommunityExportPage() {
               <div className="text-2xl font-black">CrossFit Leiden</div>
               <div className="text-[42px] font-black mt-2">WRAPPED</div>
               <div className="text-xl font-bold">2025</div>
-              <StatBox className="mt-6">Wat een jaar was dit...</StatBox>
+              <StatBox style={{ marginTop: "24px" }}>Wat een jaar was dit...</StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-1", "cfl-wrapped-story-1-intro")} />
           </SlideWrapper>
@@ -225,8 +225,8 @@ export default function CommunityExportPage() {
               <div className="text-5xl mb-4">🏋️</div>
               <div className="text-sm opacity-90 mb-2">Populairste les</div>
               <div className="text-2xl font-black">{COMMUNITY_STATS.populairsteLes}</div>
-              <StatBox className="mt-4">
-                <span className="text-2xl font-black">{COMMUNITY_STATS.populairsteLesBezoeken.toLocaleString("nl-NL")}</span>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.populairsteLesBezoeken.toLocaleString("nl-NL")}</span>
                 <br />
                 <span>bezoeken</span>
               </StatBox>
@@ -240,10 +240,10 @@ export default function CommunityExportPage() {
               <div className="text-5xl mb-4">📅</div>
               <div className="text-sm opacity-90 mb-2">Jullie favoriete dag?</div>
               <div className="text-4xl font-black">{COMMUNITY_STATS.favorieteDay}</div>
-              <StatBox className="mt-4">
+              <StatBox style={{ marginTop: "16px" }}>
                 {COMMUNITY_STATS.favoriteDayCount.toLocaleString("nl-NL")} bezoeken
                 <br />
-                <span className="text-xs opacity-70">Midden in de week knallen 🔥</span>
+                <span style={{ fontSize: "12px", opacity: 0.7 }}>Midden in de week knallen 🔥</span>
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-4", "cfl-wrapped-story-4-dag")} />
@@ -275,12 +275,12 @@ export default function CommunityExportPage() {
               <div className="text-5xl mb-4">🔥</div>
               <div className="text-sm opacity-90 mb-2">Drukste dag van het jaar</div>
               <div className="text-xl font-black">{COMMUNITY_STATS.druksteDag}</div>
-              <StatBox className="mt-4">
-                <span className="text-3xl font-black">{COMMUNITY_STATS.druksteDagCount}</span>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.druksteDagCount}</span>
                 <br />
                 <span>bezoeken</span>
               </StatBox>
-              <div className="text-xs opacity-70 mt-3">Wat een start van het jaar! 💪</div>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>Wat een start van het jaar! 💪</div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-6", "cfl-wrapped-story-6-drukste-dag")} />
           </SlideWrapper>
@@ -291,12 +291,12 @@ export default function CommunityExportPage() {
               <div className="text-5xl mb-4">😴</div>
               <div className="text-sm opacity-90 mb-2">Rustigste dag van het jaar</div>
               <div className="text-xl font-black">{COMMUNITY_STATS.rustigsteDag}</div>
-              <StatBox className="mt-4">
-                <span className="text-3xl font-black">{COMMUNITY_STATS.rustigsteDagCount}</span>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.rustigsteDagCount}</span>
                 <br />
                 <span>bezoeken</span>
               </StatBox>
-              <div className="text-xs opacity-70 mt-3">Kerst = rust... snappen we 😉</div>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>Kerst = rust... snappen we 😉</div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-7", "cfl-wrapped-story-7-rustigste-dag")} />
           </SlideWrapper>
@@ -308,8 +308,8 @@ export default function CommunityExportPage() {
               <div className="text-sm opacity-90 mb-2">Drukste les van het jaar</div>
               <div className="text-lg font-black">{COMMUNITY_STATS.druksteLes}</div>
               <div className="text-sm opacity-70">{COMMUNITY_STATS.druksteLesDate} • {COMMUNITY_STATS.druksteLesTijd}</div>
-              <StatBox className="mt-4">
-                <span className="text-3xl font-black">{COMMUNITY_STATS.druksteLesDeelnemers}</span>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.druksteLesDeelnemers}</span>
                 <br />
                 <span>deelnemers</span>
               </StatBox>
@@ -321,7 +321,7 @@ export default function CommunityExportPage() {
           <SlideWrapper label="Story 9 - Top Coaches">
             <StorySlide id="story-9" bg="coral">
               <div className="text-5xl mb-4">🏆</div>
-              <div className="text-sm opacity-90 mb-2">Jullie top coaches</div>
+              <div className="text-sm opacity-90 mb-2">Meeste groepslessen</div>
               <div className="w-full max-w-[220px] flex flex-col gap-2 mt-4">
                 {topCoaches.map((coach, i) => (
                   <div key={coach.voornaam} className="bg-white/20 rounded-lg px-4 py-2.5 flex justify-between items-center">
@@ -330,7 +330,7 @@ export default function CommunityExportPage() {
                   </div>
                 ))}
               </div>
-              <div className="text-xs opacity-70 mt-3">lessen gegeven</div>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>groepslessen gegeven</div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-9", "cfl-wrapped-story-9-coaches")} />
           </SlideWrapper>
@@ -343,10 +343,10 @@ export default function CommunityExportPage() {
               <div className="text-[56px] font-black leading-none">{COMMUNITY_STATS.gymBuddyDuos}</div>
               <div className="text-xl font-bold mt-1">gym buddy duo&apos;s</div>
               <div className="text-xs opacity-70">(10+ sessies samen)</div>
-              <StatBox className="mt-5">
-                <div className="text-xs opacity-70">Sterkste buddies:</div>
-                <div className="text-3xl font-black">{COMMUNITY_STATS.sterksteBuddySessies}x</div>
-                <div className="text-xs opacity-70">samen getraind</div>
+              <StatBox style={{ marginTop: "20px" }}>
+                <div style={{ fontSize: "12px", opacity: 0.7 }}>Sterkste buddies:</div>
+                <div style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.sterksteBuddySessies}x</div>
+                <div style={{ fontSize: "12px", opacity: 0.7 }}>samen getraind</div>
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-10", "cfl-wrapped-story-10-buddies")} />
@@ -359,7 +359,7 @@ export default function CommunityExportPage() {
               <div className="text-sm opacity-90 mb-2">En ja...</div>
               <div className="text-[56px] font-black leading-none">{COMMUNITY_STATS.afmeldingen.toLocaleString("nl-NL")}</div>
               <div className="text-xl font-bold mt-1">afmeldingen</div>
-              <StatBox>In 2026 doen we beter... toch? 😉</StatBox>
+              <StatBox style={{}}>In 2026 doen we beter... toch? 😉</StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-11", "cfl-wrapped-story-11-afmeldingen")} />
           </SlideWrapper>
@@ -370,9 +370,9 @@ export default function CommunityExportPage() {
               <div className="text-5xl mb-4">❤️</div>
               <div className="text-sm opacity-90 mb-2">Bedankt voor</div>
               <div className="text-2xl font-black">een geweldig 2025</div>
-              <StatBox className="mt-6">
+              <StatBox style={{ marginTop: "24px" }}>
                 <div>Op naar een sterk en gezond</div>
-                <div className="text-3xl font-black mt-1">2026! 🎉</div>
+                <div style={{ fontSize: "30px", fontWeight: 900, marginTop: "4px" }}>2026! 🎉</div>
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-12", "cfl-wrapped-story-12-outro")} />
@@ -424,52 +424,145 @@ export default function CommunityExportPage() {
             <DownloadButton onClick={() => downloadSlide("post-2", "cfl-wrapped-post-2-dag-tijd")} />
           </SlideWrapper>
 
-          {/* Post 3: Coaches */}
-          <SlideWrapper label="Post 3 - Coaches">
-            <PostSlide id="post-3" bg="yellow">
+          {/* Post 3: Populairste Les */}
+          <SlideWrapper label="Post 3 - Populairste Les">
+            <PostSlide id="post-3" bg="coral">
+              <div className="text-4xl mb-2">🏋️</div>
+              <div className="text-xs uppercase tracking-widest opacity-80">Populairste les</div>
+              <div className="text-2xl font-black my-2">{COMMUNITY_STATS.populairsteLes}</div>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.populairsteLesBezoeken.toLocaleString("nl-NL")}</span>
+                <br />
+                <span>bezoeken</span>
+              </StatBox>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-3", "cfl-wrapped-post-3-les")} />
+          </SlideWrapper>
+
+          {/* Post 4: Drukste Dag */}
+          <SlideWrapper label="Post 4 - Drukste Dag">
+            <PostSlide id="post-4" bg="teal">
+              <div className="text-4xl mb-2">🔥</div>
+              <div className="text-xs uppercase tracking-widest opacity-80">Drukste dag</div>
+              <div className="text-xl font-black my-2">{COMMUNITY_STATS.druksteDag}</div>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.druksteDagCount}</span>
+                <br />
+                <span>bezoeken</span>
+              </StatBox>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-4", "cfl-wrapped-post-4-drukste-dag")} />
+          </SlideWrapper>
+
+          {/* Post 5: Rustigste Dag */}
+          <SlideWrapper label="Post 5 - Rustigste Dag">
+            <PostSlide id="post-5" bg="purple">
+              <div className="text-4xl mb-2">😴</div>
+              <div className="text-xs uppercase tracking-widest opacity-80">Rustigste dag</div>
+              <div className="text-xl font-black my-2">{COMMUNITY_STATS.rustigsteDag}</div>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.rustigsteDagCount}</span>
+                <br />
+                <span>bezoeken</span>
+              </StatBox>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>Kerst = rust 😉</div>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-5", "cfl-wrapped-post-5-rustigste-dag")} />
+          </SlideWrapper>
+
+          {/* Post 6: Drukste Les */}
+          <SlideWrapper label="Post 6 - Drukste Les">
+            <PostSlide id="post-6" bg="yellow">
               <div className="text-4xl mb-2">🏆</div>
-              <div className="text-xs uppercase tracking-widest opacity-80">Top Coaches 2025</div>
+              <div className="text-xs uppercase tracking-widest opacity-80">Drukste les</div>
+              <div className="text-lg font-black">{COMMUNITY_STATS.druksteLes}</div>
+              <div className="text-sm opacity-70">{COMMUNITY_STATS.druksteLesDate}</div>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.druksteLesDeelnemers}</span>
+                <br />
+                <span>deelnemers</span>
+              </StatBox>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-6", "cfl-wrapped-post-6-drukste-les")} />
+          </SlideWrapper>
+
+          {/* Post 7: Top Coaches */}
+          <SlideWrapper label="Post 7 - Coaches">
+            <PostSlide id="post-7" bg="coral">
+              <div className="text-4xl mb-2">🏆</div>
+              <div className="text-xs uppercase tracking-widest opacity-80">Meeste groepslessen</div>
               <div className="w-full max-w-[220px] flex flex-col gap-2 mt-3">
                 {topCoaches.map((coach, i) => (
-                  <div key={coach.voornaam} className="bg-black/10 rounded-lg px-4 py-2.5 flex justify-between items-center">
-                    <span className="font-bold">{["🥇", "🥈", "🥉"][i]} {coach.voornaam}</span>
-                    <span className="opacity-70 text-sm">{coach.lessen_gegeven}</span>
+                  <div key={coach.voornaam} style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "10px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontWeight: 700 }}>{["🥇", "🥈", "🥉"][i]} {coach.voornaam}</span>
+                    <span style={{ opacity: 0.7, fontSize: "14px" }}>{coach.lessen_gegeven}</span>
                   </div>
                 ))}
               </div>
-              <div className="text-xs opacity-70 mt-2">lessen gegeven dit jaar</div>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>groepslessen gegeven</div>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-3", "cfl-wrapped-post-3-coaches")} />
+            <DownloadButton onClick={() => downloadSlide("post-7", "cfl-wrapped-post-7-coaches")} />
           </SlideWrapper>
 
-          {/* Post 4: Buddies */}
-          <SlideWrapper label="Post 4 - Buddies">
-            <PostSlide id="post-4" bg="purple">
+          {/* Post 8: Early Birds vs Night Owls */}
+          <SlideWrapper label="Post 8 - Tijden">
+            <PostSlide id="post-8" bg="teal">
+              <div className="text-4xl mb-2">⏰</div>
+              <div className="text-xs uppercase tracking-widest opacity-80">Wanneer trainen jullie?</div>
+              <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "18px", fontWeight: 900 }}>☀️ {COMMUNITY_STATS.earlyBirds.toLocaleString("nl-NL")}</div>
+                  <div style={{ fontSize: "12px", opacity: 0.8 }}>early birds</div>
+                </div>
+                <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "18px", fontWeight: 900 }}>🌙 {COMMUNITY_STATS.nightOwls.toLocaleString("nl-NL")}</div>
+                  <div style={{ fontSize: "12px", opacity: 0.8 }}>night owls</div>
+                </div>
+              </div>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-8", "cfl-wrapped-post-8-tijden")} />
+          </SlideWrapper>
+
+          {/* Post 9: Gym Buddies */}
+          <SlideWrapper label="Post 9 - Buddies">
+            <PostSlide id="post-9" bg="purple">
               <div className="text-4xl mb-2">🤝</div>
               <div className="text-xs uppercase tracking-widest opacity-80">Gym Buddies</div>
               <div className="text-6xl font-black my-2">{COMMUNITY_STATS.gymBuddyDuos}</div>
               <div className="text-sm font-bold">duo&apos;s met 10+ sessies samen</div>
-              <StatBox className="mt-4">
-                <div className="text-xs opacity-70">Sterkste buddies</div>
-                <div className="text-2xl font-black">{COMMUNITY_STATS.sterksteBuddySessies}x samen</div>
+              <StatBox style={{ marginTop: "16px" }}>
+                <div style={{ fontSize: "12px", opacity: 0.7 }}>Sterkste buddies</div>
+                <div style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.sterksteBuddySessies}x samen</div>
               </StatBox>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-4", "cfl-wrapped-post-4-buddies")} />
+            <DownloadButton onClick={() => downloadSlide("post-9", "cfl-wrapped-post-9-buddies")} />
           </SlideWrapper>
 
-          {/* Post 5: Thank you */}
-          <SlideWrapper label="Post 5 - Outro">
-            <PostSlide id="post-5" bg="coral">
+          {/* Post 10: Afmeldingen */}
+          <SlideWrapper label="Post 10 - Afmeldingen">
+            <PostSlide id="post-10" bg="dark">
+              <div className="text-4xl mb-2">😅</div>
+              <div className="text-xs uppercase tracking-widest opacity-80">En ja...</div>
+              <div className="text-5xl font-black my-2">{COMMUNITY_STATS.afmeldingen.toLocaleString("nl-NL")}</div>
+              <div className="text-lg font-bold">afmeldingen</div>
+              <StatBox style={{ marginTop: "16px" }}>In 2026 beter? 😉</StatBox>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-10", "cfl-wrapped-post-10-afmeldingen")} />
+          </SlideWrapper>
+
+          {/* Post 11: Thank you */}
+          <SlideWrapper label="Post 11 - Outro">
+            <PostSlide id="post-11" bg="coral">
               <div className="text-4xl mb-2">❤️</div>
               <div className="text-xs uppercase tracking-widest opacity-80">Bedankt voor 2025</div>
               <div className="text-xl font-black my-3">Op naar een sterk</div>
               <div className="text-[56px] font-black">2026</div>
-              <StatBox className="mt-4 text-sm">
+              <StatBox style={{ marginTop: "16px", fontSize: "14px" }}>
                 🎉 Fijne feestdagen<br />
                 💪 Tot op de vloer
               </StatBox>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-5", "cfl-wrapped-post-5-outro")} />
+            <DownloadButton onClick={() => downloadSlide("post-11", "cfl-wrapped-post-11-outro")} />
           </SlideWrapper>
         </div>
       )}
@@ -488,21 +581,44 @@ function SlideWrapper({ label, children }: { label: string; children: React.Reac
 }
 
 function StorySlide({ id, bg, children }: { id: string; bg: string; children: React.ReactNode }) {
-  const bgClasses: Record<string, string> = {
-    coral: "bg-gradient-to-br from-[#EF4C37] to-[#c93d2d]",
-    teal: "bg-gradient-to-br from-[#0CBABA] to-[#099999]",
-    yellow: "bg-gradient-to-br from-[#F7CB15] to-[#e5b800] text-[#1a1a1a]",
-    purple: "bg-gradient-to-br from-[#7B6D8D] to-[#5d5169]",
-    dark: "bg-gradient-to-br from-[#1a1a1a] to-[#2d2d2d]",
+  const bgStyles: Record<string, React.CSSProperties> = {
+    coral: { background: "linear-gradient(135deg, #EF4C37 0%, #c93d2d 100%)" },
+    teal: { background: "linear-gradient(135deg, #0CBABA 0%, #099999 100%)" },
+    yellow: { background: "linear-gradient(135deg, #F7CB15 0%, #e5b800 100%)", color: "#1a1a1a" },
+    purple: { background: "linear-gradient(135deg, #7B6D8D 0%, #5d5169 100%)" },
+    dark: { background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)" },
   };
 
   return (
     <div
       id={id}
-      className={`w-[270px] h-[480px] rounded-2xl relative overflow-hidden flex flex-col items-center justify-center text-center p-6 ${bgClasses[bg]}`}
+      style={{
+        width: "270px",
+        height: "480px",
+        borderRadius: "16px",
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: "24px",
+        color: "white",
+        ...bgStyles[bg],
+      }}
     >
       {children}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-widest opacity-60">
+      <div style={{
+        position: "absolute",
+        bottom: "16px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        fontSize: "10px",
+        fontWeight: "bold",
+        letterSpacing: "0.1em",
+        opacity: 0.6,
+      }}>
         CROSSFIT LEIDEN
       </div>
     </div>
@@ -510,29 +626,59 @@ function StorySlide({ id, bg, children }: { id: string; bg: string; children: Re
 }
 
 function PostSlide({ id, bg, children }: { id: string; bg: string; children: React.ReactNode }) {
-  const bgClasses: Record<string, string> = {
-    coral: "bg-gradient-to-br from-[#EF4C37] to-[#c93d2d]",
-    teal: "bg-gradient-to-br from-[#0CBABA] to-[#099999]",
-    yellow: "bg-gradient-to-br from-[#F7CB15] to-[#e5b800] text-[#1a1a1a]",
-    purple: "bg-gradient-to-br from-[#7B6D8D] to-[#5d5169]",
+  const bgStyles: Record<string, React.CSSProperties> = {
+    coral: { background: "linear-gradient(135deg, #EF4C37 0%, #c93d2d 100%)" },
+    teal: { background: "linear-gradient(135deg, #0CBABA 0%, #099999 100%)" },
+    yellow: { background: "linear-gradient(135deg, #F7CB15 0%, #e5b800 100%)", color: "#1a1a1a" },
+    purple: { background: "linear-gradient(135deg, #7B6D8D 0%, #5d5169 100%)" },
+    dark: { background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)" },
   };
 
   return (
     <div
       id={id}
-      className={`w-[320px] h-[320px] rounded-xl relative overflow-hidden flex flex-col items-center justify-center text-center p-6 ${bgClasses[bg]}`}
+      style={{
+        width: "320px",
+        height: "320px",
+        borderRadius: "12px",
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: "24px",
+        color: "white",
+        ...bgStyles[bg],
+      }}
     >
       {children}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-widest opacity-60">
+      <div style={{
+        position: "absolute",
+        bottom: "16px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        fontSize: "10px",
+        fontWeight: "bold",
+        letterSpacing: "0.1em",
+        opacity: 0.6,
+      }}>
         CROSSFIT LEIDEN
       </div>
     </div>
   );
 }
 
-function StatBox({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function StatBox({ children, style = {} }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
-    <div className={`bg-white/20 rounded-xl px-4 py-3 text-sm ${className}`}>
+    <div style={{
+      backgroundColor: "rgba(255, 255, 255, 0.2)",
+      borderRadius: "12px",
+      padding: "12px 16px",
+      fontSize: "14px",
+      ...style,
+    }}>
       {children}
     </div>
   );
