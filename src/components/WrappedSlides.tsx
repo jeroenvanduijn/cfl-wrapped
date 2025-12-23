@@ -766,20 +766,17 @@ export default function WrappedSlides({ member, onBack }: Props) {
       drawBox(560, 1110, 430, 160);
       ctx.font = "24px Arial, sans-serif";
       ctx.fillText("Topmaand", 305, 1170);
-      ctx.fillText("Lestype", 775, 1170);
+      ctx.fillText("Favoriete les", 775, 1170);
       ctx.font = "bold 34px Arial, sans-serif";
       ctx.fillText(member.top_maand, 305, 1230);
       ctx.fillText(member.favoriete_lestype, 775, 1230);
 
-      // Moeilijkste moment & No-shows
-      drawBox(90, 1300, 430, 160);
-      drawBox(560, 1300, 430, 160);
+      // Moeilijkste dag
+      drawBox(90, 1300, 900, 160);
       ctx.font = "24px Arial, sans-serif";
-      ctx.fillText("Moeilijkste dag", 305, 1360);
-      ctx.fillText("No-shows", 775, 1360);
+      ctx.fillText("Moeilijkste dag", 540, 1360);
       ctx.font = "bold 34px Arial, sans-serif";
-      ctx.fillText(member.moeilijkste_dag || "-", 305, 1420);
-      ctx.fillText(String(member.no_shows), 775, 1420);
+      ctx.fillText(member.moeilijkste_dag || "-", 540, 1420);
 
       // Buddies (if exists)
       if (member.buddy_1) {
@@ -789,10 +786,10 @@ export default function WrappedSlides({ member, onBack }: Props) {
 
         drawBox(90, 1490, 900, boxHeight);
         ctx.font = "24px Arial, sans-serif";
-        ctx.fillText("Training Buddies", 540, 1535);
+        ctx.fillText("Training Buddies", 540, 1540);
         ctx.font = "bold 28px Arial, sans-serif";
 
-        let buddyY = 1580;
+        let buddyY = 1590;
         const buddySpacing = 45;
 
         if (member.buddy_1) {

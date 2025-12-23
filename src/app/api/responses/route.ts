@@ -1,8 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-
-const RESPONSES_FILE = path.join(process.cwd(), "responses.json");
 
 type Response = {
   memberId: number;
@@ -12,18 +8,9 @@ type Response = {
   timestamp: string;
 };
 
-async function getResponses(): Promise<Response[]> {
-  try {
-    const data = await fs.readFile(RESPONSES_FILE, "utf-8");
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-async function saveResponses(responses: Response[]): Promise<void> {
-  await fs.writeFile(RESPONSES_FILE, JSON.stringify(responses, null, 2));
-}
+// In-memory storage (will reset on cold starts, but works for Vercel)
+// For production, consider using Vercel KV, Supabase, or similar
+let responsesCache: Response[] = [];
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,10 +21,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const responses = await getResponses();
-
     // Check if member already submitted
-    const existingIndex = responses.findIndex((r) => r.memberId === memberId);
+    const existingIndex = responsesCache.findIndex((r) => r.memberId === memberId);
 
     const newResponse: Response = {
       memberId,
@@ -48,12 +33,10 @@ export async function POST(request: NextRequest) {
     };
 
     if (existingIndex >= 0) {
-      responses[existingIndex] = newResponse;
+      responsesCache[existingIndex] = newResponse;
     } else {
-      responses.push(newResponse);
+      responsesCache.push(newResponse);
     }
-
-    await saveResponses(responses);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -64,8 +47,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const responses = await getResponses();
-    return NextResponse.json(responses);
+    return NextResponse.json(responsesCache);
   } catch (error) {
     console.error("Error getting responses:", error);
     return NextResponse.json({ error: "Failed to get responses" }, { status: 500 });

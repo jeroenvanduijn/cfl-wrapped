@@ -12,7 +12,7 @@ type Response = {
 };
 
 type View = {
-  memberId: number;
+  memberId: string;
   voornaam: string;
   code: string;
   timestamp: string;

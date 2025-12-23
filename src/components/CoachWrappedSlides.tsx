@@ -419,11 +419,6 @@ export default function CoachWrappedSlides({ coach, onBack }: Props) {
         }
       }
 
-      // Top percentage
-      drawBox(90, 1510, 900, 120);
-      ctx.font = "bold 36px Arial, sans-serif";
-      ctx.fillText(`Top ${coach.percentile}% actieve coaches`, 540, 1585);
-
       // Footer
       ctx.font = "28px Arial, sans-serif";
       ctx.fillText("crossfitleiden.nl", 540, 1800);
