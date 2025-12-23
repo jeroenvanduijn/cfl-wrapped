@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { kv } from "@vercel/kv";
 
 type View = {
   memberId: string;
@@ -8,9 +9,7 @@ type View = {
   viewCount: number;
 };
 
-// In-memory storage (will reset on cold starts, but works for Vercel)
-// For production, consider using Vercel KV, Supabase, or similar
-let viewsCache: View[] = [];
+const VIEWS_KEY = "cfl-wrapped-views";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,16 +20,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    // Get current views
+    const views: View[] = (await kv.get(VIEWS_KEY)) || [];
+
     // Check if member already viewed (by code to handle both members and coaches)
-    const existingIndex = viewsCache.findIndex((v) => v.code === code);
+    const existingIndex = views.findIndex((v) => v.code === code);
 
     if (existingIndex >= 0) {
       // Increment view count
-      viewsCache[existingIndex].viewCount += 1;
-      viewsCache[existingIndex].timestamp = new Date().toISOString();
+      views[existingIndex].viewCount += 1;
+      views[existingIndex].timestamp = new Date().toISOString();
     } else {
       // New view
-      viewsCache.push({
+      views.push({
         memberId: String(memberId),
         voornaam,
         code,
@@ -38,6 +40,9 @@ export async function POST(request: NextRequest) {
         viewCount: 1,
       });
     }
+
+    // Save back to KV
+    await kv.set(VIEWS_KEY, views);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -48,7 +53,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    return NextResponse.json(viewsCache);
+    const views: View[] = (await kv.get(VIEWS_KEY)) || [];
+    return NextResponse.json(views);
   } catch (error) {
     console.error("Error getting views:", error);
     return NextResponse.json({ error: "Failed to get views" }, { status: 500 });

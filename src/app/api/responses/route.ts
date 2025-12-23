@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { kv } from "@vercel/kv";
 
 type Response = {
   memberId: number;
@@ -8,9 +9,7 @@ type Response = {
   timestamp: string;
 };
 
-// In-memory storage (will reset on cold starts, but works for Vercel)
-// For production, consider using Vercel KV, Supabase, or similar
-let responsesCache: Response[] = [];
+const RESPONSES_KEY = "cfl-wrapped-responses";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,8 +20,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    // Get current responses
+    const responses: Response[] = (await kv.get(RESPONSES_KEY)) || [];
+
     // Check if member already submitted
-    const existingIndex = responsesCache.findIndex((r) => r.memberId === memberId);
+    const existingIndex = responses.findIndex((r) => r.memberId === memberId);
 
     const newResponse: Response = {
       memberId,
@@ -33,10 +35,13 @@ export async function POST(request: NextRequest) {
     };
 
     if (existingIndex >= 0) {
-      responsesCache[existingIndex] = newResponse;
+      responses[existingIndex] = newResponse;
     } else {
-      responsesCache.push(newResponse);
+      responses.push(newResponse);
     }
+
+    // Save back to KV
+    await kv.set(RESPONSES_KEY, responses);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -47,7 +52,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    return NextResponse.json(responsesCache);
+    const responses: Response[] = (await kv.get(RESPONSES_KEY)) || [];
+    return NextResponse.json(responses);
   } catch (error) {
     console.error("Error getting responses:", error);
     return NextResponse.json({ error: "Failed to get responses" }, { status: 500 });
