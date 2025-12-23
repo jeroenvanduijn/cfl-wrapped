@@ -3,7 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import WrappedSlides from "@/components/WrappedSlides";
+import CoachWrappedSlides from "@/components/CoachWrappedSlides";
 import wrappedData from "@/data/wrapped-data.json";
+import coachWrappedData from "@/data/coach-wrapped-data.json";
 
 type MemberData = {
   registratienummer: number;
@@ -34,9 +36,43 @@ type MemberData = {
   no_shows: number;
 };
 
+type CoachData = {
+  coach_naam: string;
+  voornaam: string;
+  code: string;
+  lessen_gegeven: number;
+  leden_getraind_totaal: number;
+  unieke_leden: number;
+  gemiddeld_per_les: number;
+  favoriete_dag: string;
+  favoriete_dag_count: number;
+  favoriete_tijd: string;
+  favoriete_tijd_count: number;
+  top_maand: string;
+  top_maand_count: number;
+  top_lestype: string;
+  top_lestype_count: number;
+  drukste_les_naam: string;
+  drukste_les_datum: string;
+  drukste_les_tijd: string;
+  drukste_les_deelnemers: number;
+  vaste_klant_1: string;
+  vaste_klant_1_count: number;
+  vaste_klant_2: string;
+  vaste_klant_2_count: number;
+  vaste_klant_3: string;
+  vaste_klant_3_count: number;
+  early_bird_lessen: number;
+  early_bird_percentage: number;
+  night_owl_lessen: number;
+  night_owl_percentage: number;
+  percentile: number;
+};
+
 export default function Home() {
   const [code, setCode] = useState("");
   const [member, setMember] = useState<MemberData | null>(null);
+  const [coach, setCoach] = useState<CoachData | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,14 +82,16 @@ export default function Home() {
     setIsLoading(true);
 
     const upperCode = code.toUpperCase().trim();
-    const data = wrappedData as Record<string, MemberData>;
+    const memberData = wrappedData as Record<string, MemberData>;
+    const coachData = coachWrappedData as Record<string, CoachData>;
 
     // Simulate loading for effect
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (data[upperCode]) {
-      const memberData = data[upperCode];
-      setMember(memberData);
+    // Check if it's a coach code first
+    if (coachData[upperCode]) {
+      const foundCoach = coachData[upperCode];
+      setCoach(foundCoach);
 
       // Log view
       try {
@@ -61,8 +99,26 @@ export default function Home() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            memberId: memberData.registratienummer,
-            voornaam: memberData.voornaam,
+            memberId: 0, // Coach doesn't have memberId
+            voornaam: foundCoach.voornaam + " (coach)",
+            code: upperCode,
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to log view:", err);
+      }
+    } else if (memberData[upperCode]) {
+      const foundMember = memberData[upperCode];
+      setMember(foundMember);
+
+      // Log view
+      try {
+        await fetch("/api/views", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            memberId: foundMember.registratienummer,
+            voornaam: foundMember.voornaam,
             code: upperCode,
           }),
         });
@@ -75,7 +131,12 @@ export default function Home() {
     setIsLoading(false);
   };
 
-  // Show Wrapped slides if member is loaded
+  // Show Coach Wrapped slides if coach is loaded
+  if (coach) {
+    return <CoachWrappedSlides coach={coach} onBack={() => setCoach(null)} />;
+  }
+
+  // Show Member Wrapped slides if member is loaded
   if (member) {
     return <WrappedSlides member={member} onBack={() => setMember(null)} />;
   }
