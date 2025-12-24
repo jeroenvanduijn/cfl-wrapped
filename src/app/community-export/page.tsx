@@ -63,10 +63,10 @@ const COMMUNITY_STATS = {
   favoriteTime: "09:00",
   earlyBirdsPercent: 40,
   nightOwlsPercent: 35,
-  busiestDay: "April 14, 2025",
-  busiestDayCount: 471,
-  quietestDay: "January 1, 2025",
-  quietestDayCount: 3,
+  busiestDay: "July 7, 2025",
+  busiestDayCount: 205,
+  quietestDay: "January 26, 2025",
+  quietestDayCount: 47,
   busiestClass: "CFL Grill & Chill",
   busiestClassDate: "June 21, 2025",
   busiestClassTime: "16:00",
@@ -75,13 +75,13 @@ const COMMUNITY_STATS = {
   strongestBuddySessions: maxBuddySessions,
   cancellations: totalCancellations,
   // Extra stats
-  flexFridayMembers: 163,
-  flexFridayFriends: 207,
+  flexFridayMembers: 342,
+  flexFridayFriends: 0,
   gymnasticsLovers: 95,
   runners: 112,
   fysioVisitors: 99,
-  mostCancelsDay: "May 30, 2025",
-  mostCancelsDayCount: 268,
+  mostCancelsDay: "January 10, 2025",
+  mostCancelsDayCount: 150,
   consistentMembers: 22,
 };
 
@@ -412,18 +412,10 @@ export default function CommunityExportPage() {
             <StorySlide id="story-11" bg="yellow">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>🍻</div>
               <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Flex Friday fans</div>
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-                <div style={{ backgroundColor: "rgba(0,0,0,0.15)", borderRadius: "8px", padding: "12px 16px", textAlign: "center" }}>
-                  <div style={{ fontSize: "32px", fontWeight: 900 }}>{COMMUNITY_STATS.flexFridayMembers}</div>
-                  <div style={{ fontSize: "12px", opacity: 0.8 }}>members</div>
-                </div>
-                <div style={{ backgroundColor: "rgba(0,0,0,0.15)", borderRadius: "8px", padding: "12px 16px", textAlign: "center" }}>
-                  <div style={{ fontSize: "32px", fontWeight: 900 }}>{COMMUNITY_STATS.flexFridayFriends}</div>
-                  <div style={{ fontSize: "12px", opacity: 0.8 }}>friends</div>
-                </div>
-              </div>
+              <div style={{ fontSize: "64px", fontWeight: 900, marginTop: "8px" }}>{COMMUNITY_STATS.flexFridayMembers}</div>
+              <div style={{ fontSize: "16px", opacity: 0.9, marginBottom: "16px" }}>members</div>
               <StatBox style={{ marginTop: "16px" }}>
-                <span>Thanks for spreading the CFL love!</span>
+                <span>Cheers to Friday vibes! 🥂</span>
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-11", "cfl-wrapped-story-11-flex")} />
@@ -482,9 +474,9 @@ export default function CommunityExportPage() {
                 <br />
                 <span>cancellations</span>
               </StatBox>
-              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>Must have been raining? 😉</div>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>New Year&apos;s resolutions on pause? 😉</div>
             </StorySlide>
-            <DownloadButton onClick={() => downloadSlide("story-15", "cfl-wrapped-story-15-rainday")} />
+            <DownloadButton onClick={() => downloadSlide("story-15", "cfl-wrapped-story-15-cancels")} />
           </SlideWrapper>
 
           {/* Story 16: Consistent Members */}
@@ -711,17 +703,9 @@ export default function CommunityExportPage() {
             <PostSlide id="post-10" bg="yellow">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>🍻</div>
               <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Flex Friday fans</div>
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-                <div style={{ backgroundColor: "rgba(0,0,0,0.15)", borderRadius: "8px", padding: "8px 12px", textAlign: "center" }}>
-                  <div style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.flexFridayMembers}</div>
-                  <div style={{ fontSize: "10px", opacity: 0.8 }}>members</div>
-                </div>
-                <div style={{ backgroundColor: "rgba(0,0,0,0.15)", borderRadius: "8px", padding: "8px 12px", textAlign: "center" }}>
-                  <div style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.flexFridayFriends}</div>
-                  <div style={{ fontSize: "10px", opacity: 0.8 }}>friends</div>
-                </div>
-              </div>
-              <StatBox style={{ marginTop: "12px", fontSize: "12px" }}>Thanks for spreading the CFL love!</StatBox>
+              <div style={{ fontSize: "48px", fontWeight: 900, marginTop: "8px" }}>{COMMUNITY_STATS.flexFridayMembers}</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>members</div>
+              <StatBox style={{ marginTop: "12px", fontSize: "12px" }}>Cheers to Friday vibes! 🥂</StatBox>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-10", "cfl-wrapped-post-10-flex")} />
           </SlideWrapper>
@@ -773,9 +757,9 @@ export default function CommunityExportPage() {
                 <br />
                 <span>cancellations</span>
               </StatBox>
-              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>Must have been raining? 😉</div>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>New Year&apos;s resolutions on pause? 😉</div>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-14", "cfl-wrapped-post-14-rainday")} />
+            <DownloadButton onClick={() => downloadSlide("post-14", "cfl-wrapped-post-14-cancels")} />
           </SlideWrapper>
 
           {/* Post 15: Consistent Members */}
