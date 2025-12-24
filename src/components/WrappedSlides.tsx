@@ -20,6 +20,7 @@ import {
   Trophy,
 } from "lucide-react";
 import communityStats from "@/data/community-stats.json";
+import consistentMembers from "@/data/consistent-members.json";
 
 type MemberData = {
   registratienummer: number;
@@ -100,6 +101,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
   const isAboveAvgAfmeldingen = afmeldingenVsAvg > 0;
   const isSameDay = member.favoriete_dag.toLowerCase() === communityStats.popularDay.toLowerCase();
   const isSameCoach = member.favoriete_coaches.includes(communityStats.popularCoach);
+  const isConsistentMember = (consistentMembers as number[]).includes(member.registratienummer);
 
   // Handle feedback submission
   const handleSubmitFeedback = async () => {
@@ -456,6 +458,32 @@ export default function WrappedSlides({ member, onBack }: Props) {
         </div>
       ),
     },
+    // Consistent member slide - only show for consistent members
+    ...(isConsistentMember
+      ? [
+          {
+            id: "consistent",
+            bg: "bg-gradient-to-br from-[#FFD700] to-[#FFA500]",
+            content: (
+              <div className="flex flex-col items-center justify-center h-full text-[#1a1a1a] text-center px-8">
+                <div className="text-7xl mb-6">🏆</div>
+                <p className="text-xl opacity-80 mb-4">Gefeliciteerd!</p>
+                <p className="text-2xl font-black mb-2">Jij bent één van de</p>
+                <p className="text-7xl font-black mb-2">22</p>
+                <p className="text-2xl font-black mb-6">meest consistente leden</p>
+                <div className="bg-black/10 rounded-2xl px-8 py-4">
+                  <p className="text-lg">
+                    Elke maand 12+ trainingen 💪
+                  </p>
+                  <p className="text-sm opacity-70 mt-2">
+                    Dat is echte toewijding!
+                  </p>
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
     // Feedback slide
     {
       id: "feedback",

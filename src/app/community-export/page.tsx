@@ -447,11 +447,11 @@ export default function CommunityExportPage() {
           <SlideWrapper label="Story 13 - Runners">
             <StorySlide id="story-13" bg="teal">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>🏃</div>
-              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Running club</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Running lovers</div>
               <div style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1 }}>{COMMUNITY_STATS.runners}</div>
               <div style={{ fontSize: "18px", fontWeight: 700, marginTop: "8px" }}>members</div>
               <StatBox style={{ marginTop: "16px" }}>
-                <span>joined our social runs</span>
+                <span>love to run!</span>
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-13", "cfl-wrapped-story-13-runners")} />
@@ -742,10 +742,10 @@ export default function CommunityExportPage() {
           <SlideWrapper label="Post 12 - Runners">
             <PostSlide id="post-12" bg="teal">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏃</div>
-              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Running club</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Running lovers</div>
               <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.runners}</div>
               <div style={{ fontSize: "16px", fontWeight: 700 }}>members</div>
-              <StatBox style={{ marginTop: "16px" }}>joined our social runs</StatBox>
+              <StatBox style={{ marginTop: "16px" }}>love to run!</StatBox>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-12", "cfl-wrapped-post-12-runners")} />
           </SlideWrapper>
