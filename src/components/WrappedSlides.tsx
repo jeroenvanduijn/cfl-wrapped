@@ -79,17 +79,12 @@ export default function WrappedSlides({ member, onBack }: Props) {
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
-  const [videoPlaying, setVideoPlaying] = useState(false);
   const [voornemen2026, setVoornemen2026] = useState("");
   const [grootsteWin2025, setGrootsteWin2025] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const slideRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Video URL - replace with actual URL when available
-  const videoUrl = ""; // TODO: Add video URL
 
   const weeklyAvg = Math.round((member.bezoeken / 52) * 10) / 10;
   const avgWeeklyAvg = Math.round((communityStats.avgBezoeken / 52) * 10) / 10;
@@ -161,32 +156,27 @@ export default function WrappedSlides({ member, onBack }: Props) {
       id: "video",
       bg: "bg-gradient-to-br from-[#1a1a1a] to-[#2d2d2d]",
       content: (
-        <div className="flex flex-col items-center justify-center h-full text-white text-center px-8">
-          {videoUrl ? (
-            <div className="w-full max-w-md aspect-[9/16] relative">
-              <video
-                ref={videoRef}
-                src={videoUrl}
-                className="w-full h-full object-cover rounded-2xl"
-                controls
-                playsInline
-                onPlay={() => setVideoPlaying(true)}
-                onPause={() => setVideoPlaying(false)}
-                onEnded={() => setVideoPlaying(false)}
+        <div className="flex flex-col items-center justify-center h-full text-white text-center px-4">
+          <div className="w-full max-w-sm" style={{ aspectRatio: "9/16" }}>
+            <div style={{ padding: "177.78% 0 0 0", position: "relative" }}>
+              <iframe
+                src="https://player.vimeo.com/video/1149178622?badge=0&autopause=0&player_id=0&app_id=58479"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                referrerPolicy="strict-origin-when-cross-origin"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "16px",
+                }}
+                title="CrossFit Leiden Wrapped: Jouw Sportjaar in Cijfers!"
               />
             </div>
-          ) : (
-            <>
-              <div className="w-32 h-32 rounded-full bg-white/10 flex items-center justify-center mb-8">
-                <Play className="w-16 h-16 opacity-60" />
-              </div>
-              <p className="text-2xl font-bold mb-4">Video komt binnenkort</p>
-              <p className="text-lg opacity-70">
-                Hier komt een speciale boodschap voor jou
-              </p>
-            </>
-          )}
-          <div className="mt-8">
+          </div>
+          <div className="mt-6">
             <ChevronRight className="w-8 h-8 opacity-40 animate-bounce" />
           </div>
         </div>
@@ -571,7 +561,7 @@ export default function WrappedSlides({ member, onBack }: Props) {
             <p className="text-sm opacity-80">En dat gaan we vieren</p>
           </div>
           <p className="text-lg opacity-80 mb-4">Tot op de vloer! ❤️</p>
-          <p className="text-sm opacity-50">Data van 1 december 2024 t/m 30 november 2025</p>
+          <p className="text-sm opacity-50">Data van 1 januari 2025 t/m 31 december 2025</p>
         </div>
       ),
     },

@@ -190,7 +190,7 @@ export default function Home() {
         </form>
 
         <p className="text-center text-sm text-gray-400 mt-6">
-          Code staat op je kaart
+          Code staat in je email
         </p>
       </div>
     </div>
