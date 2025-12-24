@@ -80,6 +80,8 @@ const COMMUNITY_STATS = {
   gymnasticsLovers: 95,
   runners: 112,
   fysioVisitors: 99,
+  hyroxLovers: 255,
+  shreddedMembers: 41,
   mostCancelsDay: "January 10, 2025",
   mostCancelsDayCount: 150,
   consistentMembers: 22,
@@ -172,7 +174,7 @@ export default function CommunityExportPage() {
   const downloadAll = async () => {
     setDownloading(true);
     const prefix = activeTab === "story" ? "story" : "post";
-    const count = activeTab === "story" ? 19 : 18;
+    const count = activeTab === "story" ? 21 : 20;
 
     for (let i = 1; i <= count; i++) {
       const slideId = `${prefix}-${i}`;
@@ -207,7 +209,7 @@ export default function CommunityExportPage() {
             activeTab === "story" ? "bg-[#EF4C37]" : "bg-[#333] hover:bg-[#444]"
           }`}
         >
-          Stories (9:16) - 19 slides
+          Stories (9:16) - 21 slides
         </button>
         <button
           onClick={() => setActiveTab("post")}
@@ -215,7 +217,7 @@ export default function CommunityExportPage() {
             activeTab === "post" ? "bg-[#EF4C37]" : "bg-[#333] hover:bg-[#444]"
           }`}
         >
-          Posts (1:1) - 18 slides
+          Posts (1:1) - 20 slides
         </button>
       </div>
 
@@ -463,9 +465,37 @@ export default function CommunityExportPage() {
             <DownloadButton onClick={() => downloadSlide("story-14", "cfl-wrapped-story-14-fysio")} />
           </SlideWrapper>
 
-          {/* Story 15: Most Cancels Day */}
-          <SlideWrapper label="Story 15 - Rain Day">
+          {/* Story 15: Hyrox */}
+          <SlideWrapper label="Story 15 - Hyrox">
             <StorySlide id="story-15" bg="dark">
+              <div style={{ fontSize: "48px", marginBottom: "16px" }}>🏋️</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Hyrox lovers</div>
+              <div style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1 }}>{COMMUNITY_STATS.hyroxLovers}</div>
+              <div style={{ fontSize: "18px", fontWeight: 700, marginTop: "8px" }}>members</div>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span>ready to race! 🔥</span>
+              </StatBox>
+            </StorySlide>
+            <DownloadButton onClick={() => downloadSlide("story-15", "cfl-wrapped-story-15-hyrox")} />
+          </SlideWrapper>
+
+          {/* Story 16: Shredded */}
+          <SlideWrapper label="Story 16 - Shredded">
+            <StorySlide id="story-16" bg="purple">
+              <div style={{ fontSize: "48px", marginBottom: "16px" }}>🔥</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>GetShredded warriors</div>
+              <div style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1 }}>{COMMUNITY_STATS.shreddedMembers}</div>
+              <div style={{ fontSize: "18px", fontWeight: 700, marginTop: "8px" }}>members</div>
+              <StatBox style={{ marginTop: "16px" }}>
+                <span>These people go HARD 💪</span>
+              </StatBox>
+            </StorySlide>
+            <DownloadButton onClick={() => downloadSlide("story-16", "cfl-wrapped-story-16-shredded")} />
+          </SlideWrapper>
+
+          {/* Story 17: Most Cancels Day */}
+          <SlideWrapper label="Story 17 - Rain Day">
+            <StorySlide id="story-17" bg="dark">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>🌧️</div>
               <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Most cancellations in one day</div>
               <div style={{ fontSize: "20px", fontWeight: 900 }}>{COMMUNITY_STATS.mostCancelsDay}</div>
@@ -476,12 +506,12 @@ export default function CommunityExportPage() {
               </StatBox>
               <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>New Year&apos;s resolutions on pause? 😉</div>
             </StorySlide>
-            <DownloadButton onClick={() => downloadSlide("story-15", "cfl-wrapped-story-15-cancels")} />
+            <DownloadButton onClick={() => downloadSlide("story-17", "cfl-wrapped-story-17-cancels")} />
           </SlideWrapper>
 
-          {/* Story 16: Consistent Members */}
-          <SlideWrapper label="Story 16 - Consistent">
-            <StorySlide id="story-16" bg="coral">
+          {/* Story 18: Consistent Members */}
+          <SlideWrapper label="Story 18 - Consistent">
+            <StorySlide id="story-18" bg="coral">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>🏆</div>
               <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Most consistent members</div>
               <div style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1 }}>{COMMUNITY_STATS.consistentMembers}</div>
@@ -491,24 +521,24 @@ export default function CommunityExportPage() {
               </StatBox>
               <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>Legends. 💪</div>
             </StorySlide>
-            <DownloadButton onClick={() => downloadSlide("story-16", "cfl-wrapped-story-16-consistent")} />
+            <DownloadButton onClick={() => downloadSlide("story-18", "cfl-wrapped-story-18-consistent")} />
           </SlideWrapper>
 
-          {/* Story 17: Cancellations Total */}
-          <SlideWrapper label="Story 17 - Cancellations">
-            <StorySlide id="story-17" bg="dark">
+          {/* Story 19: Cancellations Total */}
+          <SlideWrapper label="Story 19 - Cancellations">
+            <StorySlide id="story-19" bg="dark">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>😅</div>
               <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>And yes...</div>
               <div style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1 }}>{COMMUNITY_STATS.cancellations.toLocaleString("en-US")}</div>
               <div style={{ fontSize: "18px", fontWeight: 700, marginTop: "8px" }}>cancellations</div>
               <StatBox style={{ marginTop: "16px" }}>We&apos;ll do better in 2026... right? 😉</StatBox>
             </StorySlide>
-            <DownloadButton onClick={() => downloadSlide("story-17", "cfl-wrapped-story-17-cancellations")} />
+            <DownloadButton onClick={() => downloadSlide("story-19", "cfl-wrapped-story-19-cancellations")} />
           </SlideWrapper>
 
-          {/* Story 18: Outro */}
-          <SlideWrapper label="Story 18 - Outro">
-            <StorySlide id="story-18" bg="coral">
+          {/* Story 20: Outro */}
+          <SlideWrapper label="Story 20 - Outro">
+            <StorySlide id="story-20" bg="coral">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>❤️</div>
               <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Thank you for</div>
               <div style={{ fontSize: "24px", fontWeight: 900 }}>an amazing 2025</div>
@@ -517,12 +547,12 @@ export default function CommunityExportPage() {
                 <div style={{ fontSize: "30px", fontWeight: 900, marginTop: "4px" }}>2026! 🎉</div>
               </StatBox>
             </StorySlide>
-            <DownloadButton onClick={() => downloadSlide("story-18", "cfl-wrapped-story-18-outro")} />
+            <DownloadButton onClick={() => downloadSlide("story-20", "cfl-wrapped-story-20-outro")} />
           </SlideWrapper>
 
-          {/* Story 19: CTA - View your Wrapped */}
-          <SlideWrapper label="Story 19 - CTA">
-            <StorySlide id="story-19" bg="teal">
+          {/* Story 21: CTA - View your Wrapped */}
+          <SlideWrapper label="Story 21 - CTA">
+            <StorySlide id="story-21" bg="teal">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>📧</div>
               <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Curious about your stats?</div>
               <div style={{ fontSize: "24px", fontWeight: 900 }}>View your</div>
@@ -535,7 +565,7 @@ export default function CommunityExportPage() {
                 <div style={{ fontSize: "12px", fontWeight: 700 }}>wrapped.crossfitleiden.com</div>
               </div>
             </StorySlide>
-            <DownloadButton onClick={() => downloadSlide("story-19", "cfl-wrapped-story-19-cta")} />
+            <DownloadButton onClick={() => downloadSlide("story-21", "cfl-wrapped-story-21-cta")} />
           </SlideWrapper>
         </div>
       )}
@@ -746,9 +776,33 @@ export default function CommunityExportPage() {
             <DownloadButton onClick={() => downloadSlide("post-13", "cfl-wrapped-post-13-fysio")} />
           </SlideWrapper>
 
-          {/* Post 14: Most Cancels Day */}
-          <SlideWrapper label="Post 14 - Rain Day">
+          {/* Post 14: Hyrox */}
+          <SlideWrapper label="Post 14 - Hyrox">
             <PostSlide id="post-14" bg="dark">
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏋️</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Hyrox lovers</div>
+              <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.hyroxLovers}</div>
+              <div style={{ fontSize: "16px", fontWeight: 700 }}>members</div>
+              <StatBox style={{ marginTop: "16px" }}>ready to race! 🔥</StatBox>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-14", "cfl-wrapped-post-14-hyrox")} />
+          </SlideWrapper>
+
+          {/* Post 15: Shredded */}
+          <SlideWrapper label="Post 15 - Shredded">
+            <PostSlide id="post-15" bg="purple">
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>🔥</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>GetShredded warriors</div>
+              <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.shreddedMembers}</div>
+              <div style={{ fontSize: "16px", fontWeight: 700 }}>members</div>
+              <StatBox style={{ marginTop: "16px" }}>These people go HARD 💪</StatBox>
+            </PostSlide>
+            <DownloadButton onClick={() => downloadSlide("post-15", "cfl-wrapped-post-15-shredded")} />
+          </SlideWrapper>
+
+          {/* Post 16: Most Cancels Day */}
+          <SlideWrapper label="Post 16 - Rain Day">
+            <PostSlide id="post-16" bg="dark">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>🌧️</div>
               <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Most cancellations</div>
               <div style={{ fontSize: "18px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.mostCancelsDay}</div>
@@ -759,12 +813,12 @@ export default function CommunityExportPage() {
               </StatBox>
               <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>New Year&apos;s resolutions on pause? 😉</div>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-14", "cfl-wrapped-post-14-cancels")} />
+            <DownloadButton onClick={() => downloadSlide("post-16", "cfl-wrapped-post-16-cancels")} />
           </SlideWrapper>
 
-          {/* Post 15: Consistent Members */}
-          <SlideWrapper label="Post 15 - Consistent">
-            <PostSlide id="post-15" bg="coral">
+          {/* Post 17: Consistent Members */}
+          <SlideWrapper label="Post 17 - Consistent">
+            <PostSlide id="post-17" bg="coral">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏆</div>
               <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Most consistent members</div>
               <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.consistentMembers}</div>
@@ -772,24 +826,24 @@ export default function CommunityExportPage() {
               <StatBox style={{ marginTop: "16px" }}>trained 12+ times every month</StatBox>
               <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>Legends. 💪</div>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-15", "cfl-wrapped-post-15-consistent")} />
+            <DownloadButton onClick={() => downloadSlide("post-17", "cfl-wrapped-post-17-consistent")} />
           </SlideWrapper>
 
-          {/* Post 16: Cancellations */}
-          <SlideWrapper label="Post 16 - Cancellations">
-            <PostSlide id="post-16" bg="dark">
+          {/* Post 18: Cancellations */}
+          <SlideWrapper label="Post 18 - Cancellations">
+            <PostSlide id="post-18" bg="dark">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>😅</div>
               <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>And yes...</div>
               <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.cancellations.toLocaleString("en-US")}</div>
               <div style={{ fontSize: "16px", fontWeight: 700 }}>cancellations</div>
               <StatBox style={{ marginTop: "16px" }}>Better in 2026? 😉</StatBox>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-16", "cfl-wrapped-post-16-cancellations")} />
+            <DownloadButton onClick={() => downloadSlide("post-18", "cfl-wrapped-post-18-cancellations")} />
           </SlideWrapper>
 
-          {/* Post 17: Thank you */}
-          <SlideWrapper label="Post 17 - Outro">
-            <PostSlide id="post-17" bg="coral">
+          {/* Post 19: Thank you */}
+          <SlideWrapper label="Post 19 - Outro">
+            <PostSlide id="post-19" bg="coral">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>❤️</div>
               <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Thank you for 2025</div>
               <div style={{ fontSize: "18px", fontWeight: 900, margin: "12px 0" }}>Here&apos;s to a strong</div>
@@ -799,12 +853,12 @@ export default function CommunityExportPage() {
                 See you on the floor 💪
               </StatBox>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-17", "cfl-wrapped-post-17-outro")} />
+            <DownloadButton onClick={() => downloadSlide("post-19", "cfl-wrapped-post-19-outro")} />
           </SlideWrapper>
 
-          {/* Post 18: CTA - View your Wrapped */}
-          <SlideWrapper label="Post 18 - CTA">
-            <PostSlide id="post-18" bg="teal">
+          {/* Post 20: CTA - View your Wrapped */}
+          <SlideWrapper label="Post 20 - CTA">
+            <PostSlide id="post-20" bg="teal">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>📧</div>
               <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Your personal stats</div>
               <div style={{ fontSize: "18px", fontWeight: 900, margin: "8px 0" }}>View your</div>
@@ -814,7 +868,7 @@ export default function CommunityExportPage() {
                 <div style={{ fontSize: "14px", fontWeight: 900, marginTop: "4px" }}>wrapped.crossfitleiden.com</div>
               </StatBox>
             </PostSlide>
-            <DownloadButton onClick={() => downloadSlide("post-18", "cfl-wrapped-post-18-cta")} />
+            <DownloadButton onClick={() => downloadSlide("post-20", "cfl-wrapped-post-20-cta")} />
           </SlideWrapper>
         </div>
       )}
