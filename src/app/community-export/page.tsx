@@ -2,29 +2,78 @@
 
 import { useState } from "react";
 import coachData from "@/data/coach-wrapped-data.json";
+import wrappedData from "@/data/wrapped-data.json";
+import communityStatsData from "@/data/community-stats.json";
 
-// Community stats - update these with real data
+// Calculate real community stats from data
+const members = Object.values(wrappedData) as Array<{
+  afmeldingen: number;
+  buddy_1_sessies: number;
+  favoriete_dag: string;
+  favoriete_lestype: string;
+}>;
+
+// Count favorite days
+const dayCounts: Record<string, number> = {};
+members.forEach(m => {
+  if (m.favoriete_dag) {
+    dayCounts[m.favoriete_dag] = (dayCounts[m.favoriete_dag] || 0) + 1;
+  }
+});
+const topDay = Object.entries(dayCounts).sort((a, b) => b[1] - a[1])[0];
+
+// Count favorite classes
+const classCounts: Record<string, number> = {};
+members.forEach(m => {
+  if (m.favoriete_lestype) {
+    classCounts[m.favoriete_lestype] = (classCounts[m.favoriete_lestype] || 0) + 1;
+  }
+});
+const topClass = Object.entries(classCounts).sort((a, b) => b[1] - a[1])[0];
+
+// Calculate buddy stats
+let buddyPairs = 0;
+let maxBuddySessions = 0;
+members.forEach(m => {
+  if (m.buddy_1_sessies >= 10) buddyPairs++;
+  if (m.buddy_1_sessies > maxBuddySessions) maxBuddySessions = m.buddy_1_sessies;
+});
+
+// Total cancellations
+const totalCancellations = members.reduce((sum, m) => sum + (m.afmeldingen || 0), 0);
+
+// Translate day names
+const dayTranslations: Record<string, string> = {
+  "Maandag": "Monday",
+  "Dinsdag": "Tuesday",
+  "Woensdag": "Wednesday",
+  "Donderdag": "Thursday",
+  "Vrijdag": "Friday",
+  "Zaterdag": "Saturday",
+  "Zondag": "Sunday",
+};
+
 const COMMUNITY_STATS = {
-  totalVisits: 39326,
-  totalMembers: 480,
-  popularClass: "CFL Training",
-  popularClassVisits: 25000,
-  favoriteDay: "Wednesday",
-  favoriteDayCount: 8500,
+  totalVisits: communityStatsData.totalBezoeken,
+  totalMembers: communityStatsData.totalMembers,
+  popularClass: topClass[0],
+  popularClassMembers: topClass[1],
+  favoriteDay: dayTranslations[topDay[0]] || topDay[0],
+  favoriteDayCount: topDay[1],
   favoriteTime: "09:00",
-  earlyBirds: 12000,
-  nightOwls: 8000,
-  busiestDay: "January 6, 2025",
-  busiestDayCount: 250,
-  quietestDay: "December 25, 2025",
-  quietestDayCount: 45,
-  busiestClass: "CFL TRAINING",
-  busiestClassDate: "January 6, 2025",
-  busiestClassTime: "09:00",
-  busiestClassAttendees: 32,
-  gymBuddyDuos: 450,
-  strongestBuddySessions: 97,
-  cancellations: 15000,
+  earlyBirds: 43290,
+  nightOwls: 38314,
+  busiestDay: "April 14, 2025",
+  busiestDayCount: 471,
+  quietestDay: "January 1, 2025",
+  quietestDayCount: 3,
+  busiestClass: "CFL Grill & Chill",
+  busiestClassDate: "June 21, 2025",
+  busiestClassTime: "16:00",
+  busiestClassAttendees: 96,
+  gymBuddyDuos: buddyPairs,
+  strongestBuddySessions: maxBuddySessions,
+  cancellations: totalCancellations,
 };
 
 // Get top 3 coaches by lessons given
@@ -226,9 +275,9 @@ export default function CommunityExportPage() {
               <div className="text-sm opacity-90 mb-2">Most popular class</div>
               <div className="text-2xl font-black">{COMMUNITY_STATS.popularClass}</div>
               <StatBox style={{ marginTop: "16px" }}>
-                <span style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.popularClassVisits.toLocaleString("en-US")}</span>
+                <span style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.popularClassMembers}</span>
                 <br />
-                <span>visits</span>
+                <span>members&apos; favorite</span>
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-3", "cfl-wrapped-story-3-class")} />
@@ -241,9 +290,7 @@ export default function CommunityExportPage() {
               <div className="text-sm opacity-90 mb-2">Your favorite day?</div>
               <div className="text-4xl font-black">{COMMUNITY_STATS.favoriteDay}</div>
               <StatBox style={{ marginTop: "16px" }}>
-                {COMMUNITY_STATS.favoriteDayCount.toLocaleString("en-US")} visits
-                <br />
-                <span style={{ fontSize: "12px", opacity: 0.7 }}>Midweek warriors 🔥</span>
+                {COMMUNITY_STATS.favoriteDayCount} members&apos; favorite
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-4", "cfl-wrapped-story-4-day")} />
@@ -272,15 +319,14 @@ export default function CommunityExportPage() {
           {/* Story 6: Busiest Day */}
           <SlideWrapper label="Story 6 - Busiest Day">
             <StorySlide id="story-6" bg="coral">
-              <div className="text-5xl mb-4">🔥</div>
-              <div className="text-sm opacity-90 mb-2">Busiest day of the year</div>
-              <div className="text-xl font-black">{COMMUNITY_STATS.busiestDay}</div>
+              <div style={{ fontSize: "48px", marginBottom: "16px" }}>🔥</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Busiest day of the year</div>
+              <div style={{ fontSize: "20px", fontWeight: 900 }}>{COMMUNITY_STATS.busiestDay}</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.busiestDayCount}</span>
                 <br />
                 <span>visits</span>
               </StatBox>
-              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>What a start to the year! 💪</div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-6", "cfl-wrapped-story-6-busiest-day")} />
           </SlideWrapper>
@@ -288,15 +334,15 @@ export default function CommunityExportPage() {
           {/* Story 7: Quietest Day */}
           <SlideWrapper label="Story 7 - Quietest Day">
             <StorySlide id="story-7" bg="teal">
-              <div className="text-5xl mb-4">😴</div>
-              <div className="text-sm opacity-90 mb-2">Quietest day of the year</div>
-              <div className="text-xl font-black">{COMMUNITY_STATS.quietestDay}</div>
+              <div style={{ fontSize: "48px", marginBottom: "16px" }}>😴</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Quietest day of the year</div>
+              <div style={{ fontSize: "20px", fontWeight: 900 }}>{COMMUNITY_STATS.quietestDay}</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.quietestDayCount}</span>
                 <br />
                 <span>visits</span>
               </StatBox>
-              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>Christmas = rest... we get it 😉</div>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "12px" }}>Happy New Year! 🎉</div>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-7", "cfl-wrapped-story-7-quietest-day")} />
           </SlideWrapper>
@@ -304,10 +350,10 @@ export default function CommunityExportPage() {
           {/* Story 8: Busiest Class */}
           <SlideWrapper label="Story 8 - Busiest Class">
             <StorySlide id="story-8" bg="yellow">
-              <div className="text-5xl mb-4">🏆</div>
-              <div className="text-sm opacity-90 mb-2">Busiest class of the year</div>
-              <div className="text-lg font-black">{COMMUNITY_STATS.busiestClass}</div>
-              <div className="text-sm opacity-70">{COMMUNITY_STATS.busiestClassDate} • {COMMUNITY_STATS.busiestClassTime}</div>
+              <div style={{ fontSize: "48px", marginBottom: "16px" }}>🏆</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Busiest class of the year</div>
+              <div style={{ fontSize: "18px", fontWeight: 900 }}>{COMMUNITY_STATS.busiestClass}</div>
+              <div style={{ fontSize: "14px", opacity: 0.7 }}>{COMMUNITY_STATS.busiestClassDate} • {COMMUNITY_STATS.busiestClassTime}</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <span style={{ fontSize: "30px", fontWeight: 900 }}>{COMMUNITY_STATS.busiestClassAttendees}</span>
                 <br />
@@ -449,9 +495,9 @@ export default function CommunityExportPage() {
               <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Most popular class</div>
               <div style={{ fontSize: "20px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.popularClass}</div>
               <StatBox style={{ marginTop: "16px" }}>
-                <span style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.popularClassVisits.toLocaleString("en-US")}</span>
+                <span style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.popularClassMembers}</span>
                 <br />
-                <span>visits</span>
+                <span>members&apos; favorite</span>
               </StatBox>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-3", "cfl-wrapped-post-3-class")} />
@@ -483,7 +529,7 @@ export default function CommunityExportPage() {
                 <br />
                 <span>visits</span>
               </StatBox>
-              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>Christmas = rest 😉</div>
+              <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>Happy New Year! 🎉</div>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-5", "cfl-wrapped-post-5-quietest-day")} />
           </SlideWrapper>
