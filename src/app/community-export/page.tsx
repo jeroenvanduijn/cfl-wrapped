@@ -75,13 +75,14 @@ const COMMUNITY_STATS = {
   strongestBuddySessions: maxBuddySessions,
   cancellations: totalCancellations,
   // Extra stats
-  flexFridayLovers: 702,
+  flexFridayMembers: 163,
+  flexFridayFriends: 207,
   gymnasticsLovers: 410,
   runners: 105,
   fysioVisitors: 99,
   mostCancelsDay: "May 30, 2025",
   mostCancelsDayCount: 268,
-  consistentTrainers: 22,
+  consistentMembers: 22,
 };
 
 // Get top 3 coaches by lessons given
@@ -411,10 +412,18 @@ export default function CommunityExportPage() {
             <StorySlide id="story-11" bg="yellow">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>🍻</div>
               <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Flex Friday fans</div>
-              <div style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1 }}>{COMMUNITY_STATS.flexFridayLovers}</div>
-              <div style={{ fontSize: "18px", fontWeight: 700, marginTop: "8px" }}>members</div>
+              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                <div style={{ backgroundColor: "rgba(0,0,0,0.15)", borderRadius: "8px", padding: "12px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: "32px", fontWeight: 900 }}>{COMMUNITY_STATS.flexFridayMembers}</div>
+                  <div style={{ fontSize: "12px", opacity: 0.8 }}>members</div>
+                </div>
+                <div style={{ backgroundColor: "rgba(0,0,0,0.15)", borderRadius: "8px", padding: "12px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: "32px", fontWeight: 900 }}>{COMMUNITY_STATS.flexFridayFriends}</div>
+                  <div style={{ fontSize: "12px", opacity: 0.8 }}>friends</div>
+                </div>
+              </div>
               <StatBox style={{ marginTop: "16px" }}>
-                <span>loved ending the week with Flex Friday</span>
+                <span>Thanks for spreading the CFL love!</span>
               </StatBox>
             </StorySlide>
             <DownloadButton onClick={() => downloadSlide("story-11", "cfl-wrapped-story-11-flex")} />
@@ -478,12 +487,12 @@ export default function CommunityExportPage() {
             <DownloadButton onClick={() => downloadSlide("story-15", "cfl-wrapped-story-15-rainday")} />
           </SlideWrapper>
 
-          {/* Story 16: Consistent Trainers */}
+          {/* Story 16: Consistent Members */}
           <SlideWrapper label="Story 16 - Consistent">
             <StorySlide id="story-16" bg="coral">
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>🏆</div>
-              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Most consistent trainers</div>
-              <div style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1 }}>{COMMUNITY_STATS.consistentTrainers}</div>
+              <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "8px" }}>Most consistent members</div>
+              <div style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1 }}>{COMMUNITY_STATS.consistentMembers}</div>
               <div style={{ fontSize: "18px", fontWeight: 700, marginTop: "8px" }}>members</div>
               <StatBox style={{ marginTop: "16px" }}>
                 <span>trained 12+ times every month</span>
@@ -702,9 +711,17 @@ export default function CommunityExportPage() {
             <PostSlide id="post-10" bg="yellow">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>🍻</div>
               <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Flex Friday fans</div>
-              <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.flexFridayLovers}</div>
-              <div style={{ fontSize: "16px", fontWeight: 700 }}>members</div>
-              <StatBox style={{ marginTop: "16px" }}>loved ending the week with Flex Friday</StatBox>
+              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                <div style={{ backgroundColor: "rgba(0,0,0,0.15)", borderRadius: "8px", padding: "8px 12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.flexFridayMembers}</div>
+                  <div style={{ fontSize: "10px", opacity: 0.8 }}>members</div>
+                </div>
+                <div style={{ backgroundColor: "rgba(0,0,0,0.15)", borderRadius: "8px", padding: "8px 12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "24px", fontWeight: 900 }}>{COMMUNITY_STATS.flexFridayFriends}</div>
+                  <div style={{ fontSize: "10px", opacity: 0.8 }}>friends</div>
+                </div>
+              </div>
+              <StatBox style={{ marginTop: "12px", fontSize: "12px" }}>Thanks for spreading the CFL love!</StatBox>
             </PostSlide>
             <DownloadButton onClick={() => downloadSlide("post-10", "cfl-wrapped-post-10-flex")} />
           </SlideWrapper>
@@ -761,12 +778,12 @@ export default function CommunityExportPage() {
             <DownloadButton onClick={() => downloadSlide("post-14", "cfl-wrapped-post-14-rainday")} />
           </SlideWrapper>
 
-          {/* Post 15: Consistent Trainers */}
+          {/* Post 15: Consistent Members */}
           <SlideWrapper label="Post 15 - Consistent">
             <PostSlide id="post-15" bg="coral">
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏆</div>
-              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Most consistent</div>
-              <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.consistentTrainers}</div>
+              <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Most consistent members</div>
+              <div style={{ fontSize: "40px", fontWeight: 900, margin: "8px 0" }}>{COMMUNITY_STATS.consistentMembers}</div>
               <div style={{ fontSize: "16px", fontWeight: 700 }}>members</div>
               <StatBox style={{ marginTop: "16px" }}>trained 12+ times every month</StatBox>
               <div style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>Legends. 💪</div>
