@@ -77,8 +77,8 @@ const COMMUNITY_STATS = {
   // Extra stats
   flexFridayMembers: 163,
   flexFridayFriends: 207,
-  gymnasticsLovers: 410,
-  runners: 105,
+  gymnasticsLovers: 95,
+  runners: 112,
   fysioVisitors: 99,
   mostCancelsDay: "May 30, 2025",
   mostCancelsDayCount: 268,
