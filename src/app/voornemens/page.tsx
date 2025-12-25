@@ -28,6 +28,7 @@ export default function VoornemensPage() {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const storyRef = useRef<HTMLDivElement>(null);
 
   const voornemens = responses.filter((r) => r.voornemen2026?.trim());
@@ -66,49 +67,6 @@ export default function VoornemensPage() {
     }
   };
 
-  const triggerDownload = async (dataUrl: string, filename: string) => {
-    // Try Web Share API first (works best on mobile)
-    if (navigator.share && navigator.canShare) {
-      try {
-        const response = await fetch(dataUrl);
-        const blob = await response.blob();
-        const file = new File([blob], filename, { type: "image/png" });
-
-        if (navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: "CrossFit Leiden Voornemen 2026",
-          });
-          return;
-        }
-      } catch {
-        console.log("Share failed, falling back to download");
-      }
-    }
-
-    // Fallback: open in new tab (user can long-press to save on mobile)
-    const newTab = window.open();
-    if (newTab) {
-      newTab.document.write(`
-        <html>
-          <head><title>${filename}</title></head>
-          <body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#000;">
-            <img src="${dataUrl}" style="max-width:100%;max-height:100vh;" />
-          </body>
-        </html>
-      `);
-      newTab.document.close();
-    } else {
-      // Last resort: regular download link
-      const link = document.createElement("a");
-      link.download = filename;
-      link.href = dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
-
   const downloadStory = async () => {
     if (!storyRef.current) return;
     setIsGenerating(true);
@@ -121,7 +79,29 @@ export default function VoornemensPage() {
       });
 
       const dataUrl = canvas.toDataURL("image/png");
-      await triggerDownload(dataUrl, `cfl-voornemen-${currentIndex + 1}.png`);
+
+      // Try Web Share API first (works best on mobile)
+      if (navigator.share && navigator.canShare) {
+        try {
+          const response = await fetch(dataUrl);
+          const blob = await response.blob();
+          const file = new File([blob], `cfl-voornemen-${currentIndex + 1}.png`, { type: "image/png" });
+
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: "CrossFit Leiden Voornemen 2026",
+            });
+            setIsGenerating(false);
+            return;
+          }
+        } catch {
+          // Share cancelled or failed
+        }
+      }
+
+      // Fallback: show preview modal (user can long-press to save on iOS)
+      setPreviewImage(dataUrl);
     } catch (error) {
       console.error("Error generating image:", error);
     } finally {
@@ -289,6 +269,29 @@ export default function VoornemensPage() {
           </div>
         )}
       </div>
+
+      {/* Preview Modal for iOS - long press to save */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center p-4"
+          onClick={() => setPreviewImage(null)}
+        >
+          <p className="text-white text-center mb-4 text-sm">
+            Houd de afbeelding ingedrukt om op te slaan
+          </p>
+          <img
+            src={previewImage}
+            alt="Story preview"
+            className="max-w-full max-h-[70vh] rounded-2xl"
+          />
+          <button
+            onClick={() => setPreviewImage(null)}
+            className="mt-6 bg-white text-gray-900 px-6 py-3 rounded-xl font-medium"
+          >
+            Sluiten
+          </button>
+        </div>
+      )}
     </div>
   );
 }
