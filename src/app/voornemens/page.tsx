@@ -13,6 +13,16 @@ type Response = {
   timestamp: string;
 };
 
+// Color gradients from community slides
+const gradients = [
+  { from: "#EF4C37", to: "#D43A28" }, // Red (CFL brand)
+  { from: "#0CBABA", to: "#099999" }, // Teal
+  { from: "#F7CB15", to: "#E5B800" }, // Yellow
+  { from: "#7B6D8D", to: "#5D5169" }, // Purple
+  { from: "#6B5B95", to: "#4A4063" }, // Dark purple
+  { from: "#1a1a1a", to: "#2d2d2d" }, // Dark
+];
+
 export default function VoornemensPage() {
   const [responses, setResponses] = useState<Response[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,6 +31,9 @@ export default function VoornemensPage() {
   const storyRef = useRef<HTMLDivElement>(null);
 
   const voornemens = responses.filter((r) => r.voornemen2026?.trim());
+
+  // Get gradient based on current index
+  const currentGradient = gradients[currentIndex % gradients.length];
 
   const fetchData = async () => {
     setLoading(true);
@@ -169,18 +182,15 @@ export default function VoornemensPage() {
             {/* Story Template */}
             <div
               ref={storyRef}
-              className="relative bg-gradient-to-br from-[#0CBABA] to-[#099999] rounded-3xl overflow-hidden"
-              style={{ width: 360, height: 640 }}
+              className="relative rounded-3xl overflow-hidden"
+              style={{
+                width: 360,
+                height: 640,
+                background: `linear-gradient(to bottom right, ${currentGradient.from}, ${currentGradient.to})`
+              }}
             >
-              {/* Background pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 left-10 w-32 h-32 border-4 border-white rounded-full" />
-                <div className="absolute bottom-20 right-10 w-24 h-24 border-4 border-white rounded-full" />
-                <div className="absolute top-1/2 left-1/2 w-40 h-40 border-4 border-white rounded-full -translate-x-1/2 -translate-y-1/2" />
-              </div>
-
               {/* Content */}
-              <div className="relative z-10 flex flex-col h-full p-8">
+              <div className="flex flex-col h-full p-8">
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-8">
                   <Image
