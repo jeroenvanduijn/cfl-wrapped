@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Download, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
-import html2canvas from "html2canvas";
 import Image from "next/image";
 
 type Response = {
@@ -67,41 +66,97 @@ export default function WinsPage() {
   };
 
   const downloadStory = async () => {
-    if (!storyRef.current) {
-      alert("No storyRef");
-      return;
-    }
     setIsGenerating(true);
 
     try {
-      // Create a larger wrapper for Instagram story size (1080x1920)
-      const wrapper = document.createElement("div");
-      wrapper.style.width = "1080px";
-      wrapper.style.height = "1920px";
-      wrapper.style.position = "fixed";
-      wrapper.style.left = "-9999px";
-      wrapper.style.top = "0";
-      document.body.appendChild(wrapper);
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 1920;
+      const ctx = canvas.getContext("2d")!;
 
-      const clone = storyRef.current.cloneNode(true) as HTMLElement;
-      clone.style.width = "100%";
-      clone.style.height = "100%";
-      clone.style.borderRadius = "0";
-      wrapper.appendChild(clone);
+      // Draw gradient background
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, currentGradient.from);
+      gradient.addColorStop(1, currentGradient.to);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const canvas = await (html2canvas as any)(wrapper, {
-        width: 1080,
-        height: 1920,
-        scale: 1,
-        useCORS: true,
-        backgroundColor: null,
+      // Load and draw logo
+      const logo = new window.Image();
+      logo.crossOrigin = "anonymous";
+
+      await new Promise<void>((resolve) => {
+        logo.onload = () => {
+          // Draw logo (150x150 at position 120, 120)
+          ctx.drawImage(logo, 120, 120, 150, 150);
+          resolve();
+        };
+        logo.onerror = () => resolve();
+        logo.src = "/cfl-logo.png";
       });
 
-      document.body.removeChild(wrapper);
+      // Draw "CrossFit Leiden" text
+      ctx.fillStyle = "white";
+      ctx.font = "bold 54px system-ui, -apple-system, sans-serif";
+      ctx.fillText("CrossFit Leiden", 290, 190);
 
-      canvas.toBlob(async (blob: Blob | null) => {
+      // Draw "Wrapped 2025" text
+      ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+      ctx.font = "36px system-ui, -apple-system, sans-serif";
+      ctx.fillText("Wrapped 2025", 290, 240);
+
+      // Draw trophy emoji
+      ctx.font = "180px serif";
+      ctx.textAlign = "center";
+      ctx.fillText("🏆", canvas.width / 2, 520);
+
+      // Draw "Grootste Win 2025" label
+      ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.font = "48px system-ui, -apple-system, sans-serif";
+      ctx.fillText("Grootste Win 2025", canvas.width / 2, 650);
+
+      // Draw quote box background
+      const boxPadding = 60;
+      const boxY = 750;
+      const boxHeight = 500;
+      ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+      ctx.beginPath();
+      ctx.roundRect(boxPadding, boxY, canvas.width - boxPadding * 2, boxHeight, 48);
+      ctx.fill();
+
+      // Draw quote text (wrapped)
+      ctx.fillStyle = "white";
+      ctx.font = "bold 54px system-ui, -apple-system, sans-serif";
+      ctx.textAlign = "center";
+
+      const quoteText = `"${currentWin?.grootsteWin2025 || ""}"`;
+      const maxWidth = canvas.width - boxPadding * 2 - 80;
+      const words = quoteText.split(" ");
+      let line = "";
+      let y = boxY + 120;
+      const lineHeight = 70;
+
+      for (const word of words) {
+        const testLine = line + word + " ";
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && line !== "") {
+          ctx.fillText(line.trim(), canvas.width / 2, y);
+          line = word + " ";
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line.trim(), canvas.width / 2, y);
+
+      // Draw footer
+      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+      ctx.font = "36px system-ui, -apple-system, sans-serif";
+      ctx.fillText("www.crossfitleiden.com", canvas.width / 2, 1820);
+
+      // Convert to blob and share/download
+      canvas.toBlob(async (blob) => {
         if (!blob) {
-          alert("No blob generated");
           setIsGenerating(false);
           return;
         }
@@ -111,19 +166,15 @@ export default function WinsPage() {
         // Try native share (iOS Safari)
         if (navigator.share) {
           try {
-            await navigator.share({
-              files: [file],
-            });
+            await navigator.share({ files: [file] });
             setIsGenerating(false);
             return;
-          } catch (e) {
-            alert("Share error: " + (e as Error).message);
+          } catch {
+            // Share cancelled or failed, fall through to download
           }
-        } else {
-          alert("navigator.share not available");
         }
 
-        // Fallback for desktop: download directly
+        // Fallback: download directly
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -135,7 +186,7 @@ export default function WinsPage() {
         setIsGenerating(false);
       }, "image/png");
     } catch (error) {
-      alert("Error: " + (error as Error).message);
+      console.error("Error generating image:", error);
       setIsGenerating(false);
     }
   };
