@@ -191,20 +191,102 @@ export default function WinsPage() {
     }
   };
 
+  const generateStoryCanvas = async (win: Response, gradientIndex: number): Promise<HTMLCanvasElement> => {
+    const gradient = gradients[gradientIndex % gradients.length];
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext("2d")!;
+
+    // Draw gradient background
+    const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    bg.addColorStop(0, gradient.from);
+    bg.addColorStop(1, gradient.to);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Load and draw logo
+    const logo = new window.Image();
+    logo.crossOrigin = "anonymous";
+
+    await new Promise<void>((resolve) => {
+      logo.onload = () => {
+        ctx.drawImage(logo, 120, 120, 150, 150);
+        resolve();
+      };
+      logo.onerror = () => resolve();
+      logo.src = "/cfl-logo.png";
+    });
+
+    // Draw "CrossFit Leiden" text
+    ctx.fillStyle = "white";
+    ctx.font = "bold 54px system-ui, -apple-system, sans-serif";
+    ctx.fillText("CrossFit Leiden", 290, 190);
+
+    // Draw "Wrapped 2025" text
+    ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+    ctx.font = "36px system-ui, -apple-system, sans-serif";
+    ctx.fillText("Wrapped 2025", 290, 240);
+
+    // Draw trophy emoji
+    ctx.font = "180px serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🏆", canvas.width / 2, 520);
+
+    // Draw "Grootste Win 2025" label
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.font = "48px system-ui, -apple-system, sans-serif";
+    ctx.fillText("Grootste Win 2025", canvas.width / 2, 650);
+
+    // Draw quote box background
+    const boxPadding = 60;
+    const boxY = 750;
+    const boxHeight = 500;
+    ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+    ctx.beginPath();
+    ctx.roundRect(boxPadding, boxY, canvas.width - boxPadding * 2, boxHeight, 48);
+    ctx.fill();
+
+    // Draw quote text (wrapped)
+    ctx.fillStyle = "white";
+    ctx.font = "bold 54px system-ui, -apple-system, sans-serif";
+    ctx.textAlign = "center";
+
+    const quoteText = `"${win.grootsteWin2025 || ""}"`;
+    const maxWidth = canvas.width - boxPadding * 2 - 80;
+    const words = quoteText.split(" ");
+    let line = "";
+    let y = boxY + 120;
+    const lineHeight = 70;
+
+    for (const word of words) {
+      const testLine = line + word + " ";
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && line !== "") {
+        ctx.fillText(line.trim(), canvas.width / 2, y);
+        line = word + " ";
+        y += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line.trim(), canvas.width / 2, y);
+
+    // Draw footer
+    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.font = "36px system-ui, -apple-system, sans-serif";
+    ctx.fillText("www.crossfitleiden.com", canvas.width / 2, 1820);
+
+    return canvas;
+  };
+
   const downloadAllStories = async () => {
-    if (!storyRef.current) return;
     setIsGenerating(true);
 
     try {
       for (let i = 0; i < wins.length; i++) {
         setCurrentIndex(i);
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        const canvas = await (html2canvas as any)(storyRef.current, {
-          scale: 2,
-          backgroundColor: null,
-          useCORS: true,
-        });
+        const canvas = await generateStoryCanvas(wins[i], i);
 
         const link = document.createElement("a");
         link.download = `cfl-win-${i + 1}.png`;
