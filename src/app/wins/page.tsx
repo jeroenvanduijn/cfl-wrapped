@@ -71,43 +71,68 @@ export default function WinsPage() {
     setIsGenerating(true);
 
     try {
-      const canvas = await (html2canvas as any)(storyRef.current, {
-        scale: 2,
-        backgroundColor: null,
+      // Create a larger wrapper for Instagram story size (1080x1920)
+      const wrapper = document.createElement("div");
+      wrapper.style.width = "1080px";
+      wrapper.style.height = "1920px";
+      wrapper.style.position = "fixed";
+      wrapper.style.left = "-9999px";
+      wrapper.style.top = "0";
+      document.body.appendChild(wrapper);
+
+      const clone = storyRef.current.cloneNode(true) as HTMLElement;
+      clone.style.width = "100%";
+      clone.style.height = "100%";
+      clone.style.borderRadius = "0";
+      wrapper.appendChild(clone);
+
+      const canvas = await (html2canvas as any)(wrapper, {
+        width: 1080,
+        height: 1920,
+        scale: 1,
         useCORS: true,
+        backgroundColor: null,
       });
 
-      const blob = await new Promise<Blob>((resolve) => {
-        canvas.toBlob((b: Blob) => resolve(b), "image/png");
-      });
+      document.body.removeChild(wrapper);
 
-      const file = new File([blob], `cfl-win-${currentIndex + 1}.png`, { type: "image/png" });
-
-      // Try native share (works on iOS Safari)
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            files: [file],
-          });
+      canvas.toBlob(async (blob: Blob | null) => {
+        if (!blob) {
           setIsGenerating(false);
           return;
-        } catch {
-          // Share cancelled or not supported for files
         }
-      }
 
-      // Fallback for desktop: download directly
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `cfl-win-${currentIndex + 1}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+        const file = new File([blob], `cfl-win-${currentIndex + 1}.png`, { type: "image/png" });
+
+        // Try native share (iOS Safari)
+        if (navigator.share && navigator.canShare) {
+          try {
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title: "CrossFit Leiden Win 2025",
+              });
+              setIsGenerating(false);
+              return;
+            }
+          } catch {
+            // Share cancelled or failed
+          }
+        }
+
+        // Fallback for desktop: download directly
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `cfl-win-${currentIndex + 1}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        setIsGenerating(false);
+      }, "image/png");
     } catch (error) {
       console.error("Error generating image:", error);
-    } finally {
       setIsGenerating(false);
     }
   };
