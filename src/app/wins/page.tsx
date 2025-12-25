@@ -67,7 +67,10 @@ export default function WinsPage() {
   };
 
   const downloadStory = async () => {
-    if (!storyRef.current) return;
+    if (!storyRef.current) {
+      alert("No storyRef");
+      return;
+    }
     setIsGenerating(true);
 
     try {
@@ -98,6 +101,7 @@ export default function WinsPage() {
 
       canvas.toBlob(async (blob: Blob | null) => {
         if (!blob) {
+          alert("No blob generated");
           setIsGenerating(false);
           return;
         }
@@ -105,19 +109,18 @@ export default function WinsPage() {
         const file = new File([blob], `cfl-win-${currentIndex + 1}.png`, { type: "image/png" });
 
         // Try native share (iOS Safari)
-        if (navigator.share && navigator.canShare) {
+        if (navigator.share) {
           try {
-            if (navigator.canShare({ files: [file] })) {
-              await navigator.share({
-                files: [file],
-                title: "CrossFit Leiden Win 2025",
-              });
-              setIsGenerating(false);
-              return;
-            }
-          } catch {
-            // Share cancelled or failed
+            await navigator.share({
+              files: [file],
+            });
+            setIsGenerating(false);
+            return;
+          } catch (e) {
+            alert("Share error: " + (e as Error).message);
           }
+        } else {
+          alert("navigator.share not available");
         }
 
         // Fallback for desktop: download directly
@@ -132,7 +135,7 @@ export default function WinsPage() {
         setIsGenerating(false);
       }, "image/png");
     } catch (error) {
-      console.error("Error generating image:", error);
+      alert("Error: " + (error as Error).message);
       setIsGenerating(false);
     }
   };
