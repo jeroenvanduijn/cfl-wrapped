@@ -28,7 +28,6 @@ export default function WinsPage() {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const storyRef = useRef<HTMLDivElement>(null);
 
   const wins = responses.filter((r) => r.grootsteWin2025?.trim());
@@ -78,30 +77,34 @@ export default function WinsPage() {
         useCORS: true,
       });
 
-      const dataUrl = canvas.toDataURL("image/png");
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((b: Blob) => resolve(b), "image/png");
+      });
 
-      // Try Web Share API first (works best on mobile)
-      if (navigator.share && navigator.canShare) {
+      const file = new File([blob], `cfl-win-${currentIndex + 1}.png`, { type: "image/png" });
+
+      // Try native share (works on iOS Safari)
+      if (navigator.share) {
         try {
-          const response = await fetch(dataUrl);
-          const blob = await response.blob();
-          const file = new File([blob], `cfl-win-${currentIndex + 1}.png`, { type: "image/png" });
-
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: "CrossFit Leiden Win 2025",
-            });
-            setIsGenerating(false);
-            return;
-          }
+          await navigator.share({
+            files: [file],
+          });
+          setIsGenerating(false);
+          return;
         } catch {
-          // Share cancelled or failed
+          // Share cancelled or not supported for files
         }
       }
 
-      // Fallback: show preview modal (user can long-press to save on iOS)
-      setPreviewImage(dataUrl);
+      // Fallback for desktop: download directly
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `cfl-win-${currentIndex + 1}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error generating image:", error);
     } finally {
@@ -251,7 +254,7 @@ export default function WinsPage() {
                 {/* Footer */}
                 <div className="text-center mt-auto pt-6">
                   <p className="text-white/60 text-sm">
-                    cfl-wrapped.vercel.app
+                    www.crossfitleiden.com
                   </p>
                 </div>
               </div>
@@ -269,29 +272,6 @@ export default function WinsPage() {
           </div>
         )}
       </div>
-
-      {/* Preview Modal for iOS - long press to save */}
-      {previewImage && (
-        <div
-          className="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center p-4"
-          onClick={() => setPreviewImage(null)}
-        >
-          <p className="text-white text-center mb-4 text-sm">
-            Houd de afbeelding ingedrukt om op te slaan
-          </p>
-          <img
-            src={previewImage}
-            alt="Story preview"
-            className="max-w-full max-h-[70vh] rounded-2xl"
-          />
-          <button
-            onClick={() => setPreviewImage(null)}
-            className="mt-6 bg-white text-gray-900 px-6 py-3 rounded-xl font-medium"
-          >
-            Sluiten
-          </button>
-        </div>
-      )}
     </div>
   );
 }
