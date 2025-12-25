@@ -58,7 +58,7 @@ export default function VoornemensPage() {
     setIsGenerating(true);
 
     try {
-      const canvas = await html2canvas(storyRef.current, {
+      const canvas = await (html2canvas as any)(storyRef.current, {
         scale: 2,
         backgroundColor: null,
         useCORS: true,
@@ -84,7 +84,7 @@ export default function VoornemensPage() {
         setCurrentIndex(i);
         await new Promise((resolve) => setTimeout(resolve, 100));
 
-        const canvas = await html2canvas(storyRef.current, {
+        const canvas = await (html2canvas as any)(storyRef.current, {
           scale: 2,
           backgroundColor: null,
           useCORS: true,
