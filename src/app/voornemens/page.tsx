@@ -77,13 +77,47 @@ export default function VoornemensPage() {
         useCORS: true,
       });
 
-      const link = document.createElement("a");
-      link.download = `cfl-voornemen-${currentIndex + 1}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      canvas.toBlob(async (blob: Blob | null) => {
+        if (!blob) {
+          setIsGenerating(false);
+          return;
+        }
+
+        // Try native share on mobile
+        if (navigator.share && navigator.canShare) {
+          const file = new File(
+            [blob],
+            `cfl-voornemen-${currentIndex + 1}.png`,
+            { type: "image/png" }
+          );
+
+          if (navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                files: [file],
+                title: "CrossFit Leiden Voornemen 2026",
+              });
+              setIsGenerating(false);
+              return;
+            } catch {
+              // User cancelled or share failed, fall through to download
+            }
+          }
+        }
+
+        // Fallback: regular download
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `cfl-voornemen-${currentIndex + 1}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        setIsGenerating(false);
+      }, "image/png");
     } catch (error) {
       console.error("Error generating image:", error);
-    } finally {
       setIsGenerating(false);
     }
   };
@@ -120,29 +154,29 @@ export default function VoornemensPage() {
   const currentVoornemen = voornemens[currentIndex];
 
   return (
-    <div className="min-h-screen bg-gray-900 p-8">
+    <div className="min-h-screen bg-gray-900 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Voornemens 2026 - Story Templates
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
+              Voornemens 2026
             </h1>
-            <p className="text-gray-400">
-              {voornemens.length} voornemens gevonden (anoniem)
+            <p className="text-gray-400 text-sm">
+              {voornemens.length} voornemens (anoniem)
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button
               onClick={fetchData}
-              className="flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+              className="flex items-center gap-2 bg-gray-700 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-              Refresh
+              <span className="hidden sm:inline">Refresh</span>
             </button>
             <button
               onClick={downloadAllStories}
               disabled={voornemens.length === 0 || isGenerating}
-              className="flex items-center gap-2 bg-[#0CBABA] text-white px-4 py-2 rounded-lg hover:bg-[#099999] transition-colors disabled:opacity-50"
+              className="hidden md:flex items-center gap-2 bg-[#0CBABA] text-white px-3 py-2 rounded-lg hover:bg-[#099999] transition-colors disabled:opacity-50 text-sm"
             >
               <Download className="w-4 h-4" />
               Download Alle
